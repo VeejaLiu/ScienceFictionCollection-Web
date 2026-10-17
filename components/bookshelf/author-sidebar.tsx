@@ -11,6 +11,7 @@ import {
   HoverCardTrigger,
 } from '@/components/ui/hover-card'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useLanguage } from '@/components/language-provider'
 
 interface AuthorSidebarProps {
   authors: GitHubFile[]
@@ -25,6 +26,7 @@ export function AuthorSidebar({
   loading,
   onSelect,
 }: AuthorSidebarProps) {
+  const { t } = useLanguage()
   const isMobile = useIsMobile()
 
   const authorButton = (item: GitHubFile) => (
@@ -55,7 +57,7 @@ export function AuthorSidebar({
       <div className="p-3 border-b bg-muted/50">
         <h2 className="font-semibold text-sm flex items-center gap-2">
           <User className="h-4 w-4" />
-          选择作家
+          {t('chooseAuthor')}
         </h2>
       </div>
       <nav className="p-2">
@@ -90,7 +92,7 @@ export function AuthorSidebar({
         {authors.length === 0 && !loading && (
           <div className="py-8 text-center text-sm text-muted-foreground">
             <User className="h-8 w-8 mx-auto mb-2 opacity-40" />
-            <p>暂无作家</p>
+            <p>{t('noAuthors')}</p>
           </div>
         )}
       </nav>

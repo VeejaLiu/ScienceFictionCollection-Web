@@ -1,6 +1,7 @@
 'use client'
 
 import { ReadingProgressBar } from './reading-progress-bar'
+import { useLanguage } from '@/components/language-provider'
 
 interface BookReaderProps {
   title: string
@@ -9,6 +10,7 @@ interface BookReaderProps {
 }
 
 export function BookReader({ title, author, content }: BookReaderProps) {
+  const { t } = useLanguage()
   return (
     <div className="flex-1 flex flex-col bg-amber-50 dark:bg-amber-950/30 rounded-xl md:shadow-inner overflow-hidden min-h-[400px] md:border">
       <ReadingProgressBar>
@@ -18,7 +20,7 @@ export function BookReader({ title, author, content }: BookReaderProps) {
               {title}
             </h1>
             <p className="text-sm text-muted-foreground font-serif italic">
-              {author ? `作者：${author}` : '作者未知'}
+              {author ? t('author', { author }) : t('unknownAuthor')}
             </p>
           </div>
           <article className="prose prose-lg dark:prose-invert prose-stone mx-auto font-serif leading-loose whitespace-pre-wrap text-justify text-xl">

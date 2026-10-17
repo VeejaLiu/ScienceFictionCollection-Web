@@ -10,10 +10,9 @@ interface ReadingProgressBarProps {
 
 export function ReadingProgressBar({ children }: ReadingProgressBarProps) {
   const searchParams = useSearchParams()
-  const repo = searchParams.get('repo') || ''
   const author = searchParams.get('author') || ''
   const name = searchParams.get('name') || ''
-  const storageKey = getStorageKey(repo, author, name)
+  const storageKey = getStorageKey('', author, name)
   const [progress, setProgress] = useState(0)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastValidProgressRef = useRef(0)

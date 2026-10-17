@@ -2,9 +2,6 @@
 const nextConfig = {
   // distDir: '.next', // Reverted to default
   // output: 'export', // Disabled to allow Server Actions
-  typescript: {
-    ignoreBuildErrors: true,
-  },
   images: {
     unoptimized: true,
   },

@@ -1,0 +1,37 @@
+{
+  "siteIcons": {
+    "source": "lucide-react BookOpen",
+    "packageVersion": "0.564.0",
+    "license": "ISC AND MIT (Feather-derived portions)",
+    "licenseSource": "https://lucide.dev/license",
+    "generator": "scripts/generate-icons.mjs",
+    "files": ["public/icon.svg", "public/icon.png", "public/icon-light-32x32.png", "public/icon-dark-32x32.png", "public/apple-icon.png"]
+  },
+  "copiedUIComponents": {
+    "source": "https://github.com/shadcn-ui/ui",
+    "license": "MIT",
+    "licenseFile": "licenses/shadcn-ui-LICENSE.txt",
+    "licenseBlobSha": "fad4d887a681dd49233e5ed01ee2c7a1513089a0"
+  },
+  "nativeLibraryLicense": {
+    "source": "https://github.com/lovell/sharp-libvips/blob/main/LICENSE",
+    "licenseFile": "licenses/sharp-libvips-LICENSE.txt",
+    "licenseBlobSha": "8dada3edaf50dbc082c9a125058f25def75e625a",
+    "note": "Installed package README and versions.json are also included in generated notices. Binary redistribution obligations require release-specific review."
+  },
+  "npmPackagesWithoutBundledLicenseText": {
+    "nextjs": { "file": "nextjs-LICENSE.txt", "source": "installed next@16.1.6/license.md", "appliesTo": "@next/env and platform-specific @next/swc packages" },
+    "radix-ui": { "file": "radix-ui-LICENSE.txt", "source": "installed @radix-ui/react-dialog@1.1.15/LICENSE", "appliesTo": "MIT-declared packages in radix-ui/primitives" },
+    "embla-carousel": { "file": "embla-carousel-LICENSE.txt", "source": "https://github.com/davidjerleke/embla-carousel/blob/master/LICENSE", "blobSha": "2376624f527f4f1e53887552e42b004ab4056898" },
+    "input-otp": { "file": "input-otp-LICENSE.txt", "source": "https://github.com/guilhermerodz/input-otp/blob/master/LICENSE", "blobSha": "3d8feae905f69bb4279c5abe93d005c7ccc5bdf7" },
+    "react-remove-scroll-bar": { "file": "react-remove-scroll-bar-LICENSE.txt", "source": "https://github.com/theKashey/react-remove-scroll-bar/blob/master/LICENSE", "blobSha": "7c08c3990396ecefd90f99ff5d9a34f26f5b5616" },
+    "client-only": { "file": "react-LICENSE.txt", "source": "installed react@19.2.4/LICENSE", "note": "client-only@0.0.1 declares MIT and links to React but ships no license text. Preserve its published metadata and the React family license without claiming an exact package-specific copyright notice." }
+  },
+  "fonts": { "mode": "system fonts only", "bundledFiles": [] },
+  "upstreamApplication": {
+    "source": "https://github.com/BiscuitCoder/github_novel_read",
+    "permissionStatus": "pending",
+    "issue": "https://github.com/BiscuitCoder/github_novel_read/issues/2"
+  },
+  "authorPortraits": { "status": "unchanged; excluded from this work at maintainer request" }
+}

@@ -1,0 +1,43 @@
+科幻小说作品集：UI 素材与第三方许可记录
+
+1. 字体
+当前版本只通过 CSS 使用访问者设备已安装的系统字体，不下载或分发字体文件。
+原 Aa 古典刻本宋文件及 next/font/local 引用已移除。
+具体字体外观由设备和浏览器的可用字体决定。
+
+2. 网站图标
+public/icon.svg、icon.png、icon-light-32x32.png、icon-dark-32x32.png、
+apple-icon.png 均由 scripts/generate-icons.mjs 从 lucide-react 的 BookOpen 图标生成。
+Lucide 与 Feather 的完整 ISC/MIT 声明已收入 public/third-party-notices.txt。
+更新图标：pnpm assets:icons。
+
+3. UI 组件与依赖
+复制到 components/ui 的 shadcn/ui 组件采用上游 MIT 许可；完整原文在
+licenses/shadcn-ui-LICENSE.txt，公开许可文件中也保留了一份。
+其他依赖按各自许可证处理，不能统一视为 MIT。
+pnpm licenses:generate 从本地已安装依赖提取包版本和原始许可文件，
+生成 licenses/dependencies.json 和 public/third-party-notices.txt。
+pnpm build 会先执行同一生成过程，无需联网下载许可文件。
+
+公开站点的页尾提供第三方许可入口。
+生成清单包括开发依赖、服务器依赖，以及包内自带的许可文件；
+不表示这些包都会下发给浏览器，也不表示已完成所有分发方式的法律审查。
+发布前应在实际发布平台按锁文件安装依赖后重新生成，避免遗漏平台专属包。
+
+特别许可：@vercel/analytics 与 lightningcss 使用 MPL-2.0；
+caniuse-lite 数据使用 CC-BY-4.0；原生 libvips 包含 LGPL 等许可组件。
+发布经过修改的 MPL 代码或分发原生二进制、安装包、容器镜像时，
+需按实际分发内容履行源码、通知与重新链接等适用义务。
+原生库的 README 许可表和版本列表已一并收入生成文件；本文件不构成
+对未收录的原生依赖源码提供或二进制分发义务已完成的声明。
+
+4. 上游应用与代码生成封面
+本应用 fork 自 https://github.com/BiscuitCoder/github_novel_read。
+原作者提交历史保留。上游应用自有代码、包括代码生成的封面曲线，
+仍等待原作者明确授权：https://github.com/BiscuitCoder/github_novel_read/issues/2。
+本次第三方许可整理不代表上游应用已经获得 MIT 或其他开源授权。
+
+5. 本次范围
+已删除 5 个未使用的占位素材。按维护者要求，作者头像保持原样且不核查来源。
+小说正文与作者头像不由本文件中的软件许可证授权。
+删除素材仅影响当前工作树和后续新构建，原 Git 提交历史仍保留。

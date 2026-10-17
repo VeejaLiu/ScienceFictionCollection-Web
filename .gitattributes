@@ -1,0 +1,2 @@
+# Preserve upstream license formatting in the generated, concatenated notices.
+public/third-party-notices.txt -text whitespace=-blank-at-eol

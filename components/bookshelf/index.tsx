@@ -3,22 +3,20 @@
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useBookshelf } from './use-bookshelf'
-import { RepoInput } from './repo-input'
 import { AuthorSidebar } from './author-sidebar'
 import { BooksGrid } from './books-grid'
 import { BookReader } from './book-reader'
+import { useLanguage } from '@/components/language-provider'
 
 interface BookshelfProps {
-  initialRepoUrl?: string
   mode?: 'home' | 'author' | 'book'
 }
 
 export function Bookshelf({
-  initialRepoUrl = 'https://github.com/VeejaLiu/ScienceFictionCollection',
   mode = 'home',
 }: BookshelfProps) {
+  const { t } = useLanguage()
   const {
-    repoUrl,
     author,
     book,
     authors,
@@ -28,10 +26,9 @@ export function Bookshelf({
     fileContent,
     currentFile,
     isReaderMode,
-    handleConfirm,
     handleAuthorSelect,
     handleBookClick,
-  } = useBookshelf(mode, initialRepoUrl)
+  } = useBookshelf(mode)
 
   return (
     <div
@@ -40,20 +37,16 @@ export function Bookshelf({
         'min-h-[calc(100vh-8rem)]'
       )}
     >
-      {mode === 'home' && (
-        <RepoInput repoUrl={repoUrl} onConfirm={handleConfirm} />
-      )}
-
       <div className="relative flex-1 flex flex-col md:flex-row gap-4 min-h-0">
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/70 z-50 backdrop-blur-sm rounded-xl">
+          <div role="status" aria-label={t('loading')} className="absolute inset-0 flex items-center justify-center bg-background/70 z-50 backdrop-blur-sm rounded-xl">
             <Loader2 className="h-10 w-10 animate-spin text-primary" />
           </div>
         )}
 
         {error && (
           <div className="p-4 text-destructive bg-destructive/10 border border-destructive/20 rounded-xl text-sm">
-            {error}
+            {t(error)}
           </div>
         )}
 
@@ -68,9 +61,8 @@ export function Bookshelf({
             <BooksGrid
               books={books}
               author={author}
-              repoUrl={repoUrl}
-              initialRepoUrl={initialRepoUrl}
               onBookClick={handleBookClick}
+              loading={loading}
             />
           </>
         )}
@@ -78,8 +70,8 @@ export function Bookshelf({
         {!loading && !error && isReaderMode && fileContent && (
           <BookReader
             title={
-              currentFile?.name.replace(/\.(txt|md)$/, '') ||
-              book.replace(/\.(txt|md)$/, '')
+              currentFile?.name.replace(/\.(txt|md)$/i, '') ||
+              book.replace(/\.(txt|md)$/i, '')
             }
             author={author}
             content={fileContent}

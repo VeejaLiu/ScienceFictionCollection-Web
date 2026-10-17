@@ -16,21 +16,9 @@ export interface GitHubFile {
   };
 }
 
-export function parseGitHubUrl(url: string): { owner: string; repo: string } | null {
-  try {
-    const urlObj = new URL(url);
-    const pathParts = urlObj.pathname.split("/").filter(Boolean);
-    if (pathParts.length >= 2) {
-      return { owner: pathParts[0], repo: pathParts[1] };
-    }
-    return null;
-  } catch (e) {
-    return null;
-  }
-}
-
 export async function fetchRepoContents(owner: string, repo: string, path: string = ""): Promise<GitHubFile[] | GitHubFile> {
-  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+  const encodedPath = path.split('/').map(encodeURIComponent).join('/');
+  const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodedPath}`;
   const response = await fetch(url, {
     headers: {
       Accept: "application/vnd.github.v3+json",
@@ -56,6 +44,22 @@ export async function fetchRepoContents(owner: string, repo: string, path: strin
     }
     return a.type === "dir" ? -1 : 1;
   });
+}
+
+/** Collect readable works from an author directory, including nested series. */
+export async function fetchAuthorBooks(owner: string, repo: string, path: string): Promise<GitHubFile[]> {
+  const contents = await fetchRepoContents(owner, repo, path);
+  if (!Array.isArray(contents)) {
+    throw new Error('作者路径不是目录');
+  }
+
+  const groups = await Promise.all(contents.map(async (entry) => {
+    if (entry.type === 'dir') {
+      return fetchAuthorBooks(owner, repo, entry.path);
+    }
+    return /\.(txt|md)$/i.test(entry.name) ? [entry] : [];
+  }));
+  return groups.flat();
 }
 
 export async function fetchFileContent(downloadUrl: string): Promise<string> {

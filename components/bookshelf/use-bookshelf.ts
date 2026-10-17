@@ -2,17 +2,21 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { getRepoContentsAction, getFileContentAction } from '@/app/actions'
+import { getRepoContentsAction, getAuthorBooksAction, getBookAction } from '@/app/actions'
 import { GitHubFile } from '@/lib/github'
+import { getBookPath } from '@/lib/book-path'
+import type { MessageKey } from '@/lib/i18n'
 
-export function useBookshelf(
-  mode: 'home' | 'author' | 'book',
-  initialRepoUrl: string
-) {
+export function useBookshelf(mode: 'home' | 'author' | 'book') {
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const repoUrl = searchParams.get('repo') || initialRepoUrl
+  useEffect(() => {
+    if (!searchParams.has('repo')) return
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('repo')
+    router.replace(`${mode === 'book' ? '/book' : '/'}?${params.toString()}`, { scroll: false })
+  }, [searchParams, router, mode])
 
   let author = ''
   let book = ''
@@ -27,24 +31,29 @@ export function useBookshelf(
 
   const [authors, setAuthors] = useState<GitHubFile[]>([])
   const [books, setBooks] = useState<GitHubFile[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [authorsLoading, setAuthorsLoading] = useState(false)
+  const [booksLoading, setBooksLoading] = useState(false)
+  const [contentLoading, setContentLoading] = useState(false)
+  const loading = authorsLoading || booksLoading || contentLoading
+  const [error, setError] = useState<MessageKey | null>(null)
   const [fileContent, setFileContent] = useState<string | null>(null)
   const [currentFile, setCurrentFile] = useState<GitHubFile | null>(null)
 
   const hasAutoSelected = useRef(false)
 
   useEffect(() => {
-    if (!repoUrl || mode !== 'home') return
+    if (mode !== 'home') return
     hasAutoSelected.current = false
+    let cancelled = false
 
     const loadAuthors = async () => {
-      setLoading(true)
+      setAuthorsLoading(true)
       setError(null)
       try {
-        const result = await getRepoContentsAction(repoUrl, '')
+        const result = await getRepoContentsAction()
+        if (cancelled) return
         if (result.error) {
-          setError(result.error)
+          setError('loadError')
           setAuthors([])
           return
         }
@@ -55,121 +64,94 @@ export function useBookshelf(
           if (!author && dirs.length > 0 && !hasAutoSelected.current) {
             hasAutoSelected.current = true
             const params = new URLSearchParams()
-            if (repoUrl !== initialRepoUrl) params.set('repo', repoUrl)
             params.set('author', dirs[0].name)
             router.replace(`/?${params.toString()}`, { scroll: false })
           }
         }
       } catch (e) {
-        setError('发生未知错误')
+        if (!cancelled) setError('loadError')
       } finally {
-        setLoading(false)
+        if (!cancelled) setAuthorsLoading(false)
       }
     }
     loadAuthors()
-  }, [repoUrl, mode, author, initialRepoUrl, router])
+    return () => { cancelled = true }
+  }, [mode, author, router])
 
   useEffect(() => {
     if (!author || (mode !== 'home' && mode !== 'author')) {
       setBooks([])
+      setBooksLoading(false)
       return
     }
+    let cancelled = false
 
     const loadBooks = async () => {
-      setLoading(true)
+      setBooksLoading(true)
+      setBooks([])
       setError(null)
       try {
-        const result = await getRepoContentsAction(repoUrl, author)
+        const result = await getAuthorBooksAction(author)
+        if (cancelled) return
         if (result.error) {
-          setError(result.error)
+          setError('loadError')
           setBooks([])
           return
         }
-        const data = result.contents
-        if (Array.isArray(data)) {
-          const files = data.filter(
-            (item) =>
-              item.type === 'file' &&
-              (item.name.endsWith('.txt') || item.name.endsWith('.md'))
-          )
-          setBooks(files)
-        }
+        setBooks(result.books || [])
       } catch (e) {
-        setError('发生未知错误')
+        if (!cancelled) setError('loadError')
       } finally {
-        setLoading(false)
+        if (!cancelled) setBooksLoading(false)
       }
     }
     loadBooks()
-  }, [repoUrl, author, mode])
+    return () => { cancelled = true }
+  }, [author, mode])
 
   useEffect(() => {
     if (mode !== 'book' || !author || !book) return
+    let cancelled = false
 
     const loadBook = async () => {
-      setLoading(true)
+      setContentLoading(true)
       setError(null)
       setFileContent(null)
       setCurrentFile(null)
       try {
         const filePath = `${author}/${book}`
-        const result = await getRepoContentsAction(repoUrl, filePath)
+        const result = await getBookAction(filePath)
+        if (cancelled) return
         if (result.error) {
-          setError(result.error)
+          setError('readError')
           return
         }
-        const data = result.contents
-        if (
-          data &&
-          !Array.isArray(data) &&
-          data.type === 'file' &&
-          data.download_url
-        ) {
-          setCurrentFile(data as GitHubFile)
-          const contentResult = await getFileContentAction(data.download_url)
-          if (contentResult.error) {
-            setError(contentResult.error)
-          } else {
-            setFileContent(contentResult.content || '')
-          }
-        } else {
-          setError('无法下载文件')
-        }
+        setCurrentFile(result.file || null)
+        setFileContent(result.content || '')
       } catch (e) {
-        setError('发生未知错误')
+        if (!cancelled) setError('readError')
       } finally {
-        setLoading(false)
+        if (!cancelled) setContentLoading(false)
       }
     }
     loadBook()
-  }, [repoUrl, author, book, mode])
-
-  const handleConfirm = (url: string) => {
-    const trimmed = url.trim()
-    if (trimmed) {
-      const params = new URLSearchParams()
-      params.set('repo', trimmed)
-      router.push(`/?${params.toString()}`)
-    }
-  }
+    return () => { cancelled = true }
+  }, [author, book, mode])
 
   const handleAuthorSelect = (name: string) => {
     const params = new URLSearchParams()
-    if (repoUrl !== initialRepoUrl) params.set('repo', repoUrl)
     params.set('author', name)
     router.push(`/?${params.toString()}`)
   }
 
   const handleBookClick = (file: GitHubFile) => {
     const params = new URLSearchParams()
-    if (repoUrl !== initialRepoUrl) params.set('repo', repoUrl)
     params.set('author', author)
-    params.set('name', file.name)
+    params.set('name', getBookPath(file, author))
     router.push(`/book?${params.toString()}`)
   }
 
   return {
-    repoUrl,
     author,
     book,
     authors,
@@ -179,7 +161,6 @@ export function useBookshelf(
     fileContent,
     currentFile,
     isReaderMode: mode === 'book',
-    handleConfirm,
     handleAuthorSelect,
     handleBookClick,
   }

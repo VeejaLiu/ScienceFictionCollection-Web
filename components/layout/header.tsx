@@ -1,85 +1,50 @@
 "use client"
 
 import Link from "next/link"
-import { Menu, X, Github, Moon, Sun, BookOpen } from "lucide-react"
+import { Github, Moon, Sun, BookOpen } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
-const REPO_URL = "https://github.com/BiscuitCoder/github_novel_read"
+import { useLanguage } from "@/components/language-provider"
+import { locales, localeNames } from "@/lib/i18n"
+import { CONTENT_REPO_URL } from "@/lib/site"
 
 export function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { locale, setLocale, t } = useLanguage()
   const [theme, setTheme] = useState<"light" | "dark">("light")
 
   useEffect(() => {
-    const isDark = document.documentElement.classList.contains("dark")
-    setTheme(isDark ? "dark" : "light")
+    setTheme(document.documentElement.classList.contains("dark") ? "dark" : "light")
   }, [])
 
   const toggleTheme = () => {
-    const newTheme = theme === "light" ? "dark" : "light"
-    setTheme(newTheme)
-    document.documentElement.classList.toggle("dark")
+    const next = theme === "light" ? "dark" : "light"
+    setTheme(next)
+    document.documentElement.classList.toggle("dark", next === "dark")
   }
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 max-w-screen-2xl items-center mx-auto px-4">
-        <div className="mr-4 flex">
-          <Link href="/" className="flex items-center space-x-2">
-            <BookOpen className="h-6 w-6 text-primary" />
-            <span className="font-bold text-xl hidden sm:inline">KK 科幻坊</span>
-            <b>|</b>
-            <small className="text-[2.3vw] text-muted-foreground md:text-sm">世界随时间驶向荒芜，我们都将是熵的信徒</small>
-          </Link>
-        </div>
-
-
-        <div className="flex flex-1 items-center justify-end md:space-x-2">
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === "light" ? (
-              <Moon className="h-5 w-5" />
-            ) : (
-              <Sun className="h-5 w-5" />
-            )}
-            <span className="sr-only">切换主题</span>
-          </Button>
-
-          <Button variant="ghost" size="icon" asChild>
-            <a
-              href={REPO_URL}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Github className="h-5 w-5" />
-              <span className="sr-only">GitHub 仓库</span>
-            </a>
-          </Button>
-
-          <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-            <DropdownMenuTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-                <span className="sr-only">菜单</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuItem asChild>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <a href={REPO_URL} target="_blank" rel="noopener noreferrer">
-                  GitHub 仓库
-                </a>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+      <div className="container flex h-14 max-w-screen-2xl items-center gap-2 mx-auto px-3 sm:px-4">
+        <Link href="/" className="flex flex-1 min-w-0 items-center gap-2">
+          <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-primary" />
+          <span className="font-bold text-base sm:text-xl truncate">{t('siteTitle')}</span>
+        </Link>
+        <select
+          aria-label={t('language')}
+          value={locale}
+          onChange={(event) => setLocale(event.target.value)}
+          className="h-9 max-w-24 sm:max-w-36 rounded-md border border-input bg-background px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
+          {locales.map((code) => <option key={code} value={code} lang={code}>{localeNames[code]}</option>)}
+        </select>
+        <Button variant="ghost" size="icon" onClick={toggleTheme} aria-label={t('theme')} className="shrink-0">
+          {theme === "light" ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+        </Button>
+        <Button variant="ghost" size="icon" asChild className="shrink-0">
+          <a href={CONTENT_REPO_URL} target="_blank" rel="noopener noreferrer" aria-label={t('contentRepository')}>
+            <Github className="h-5 w-5" />
+          </a>
+        </Button>
       </div>
     </header>
   )

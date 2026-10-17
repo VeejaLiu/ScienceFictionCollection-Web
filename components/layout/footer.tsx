@@ -1,30 +1,36 @@
-import Link from "next/link"
-import { Github, BookOpen } from "lucide-react"
+"use client"
 
-const REPO_URL = "https://github.com/BiscuitCoder/github_novel_read"
+import { Github, BookOpen } from "lucide-react"
+import { useLanguage } from "@/components/language-provider"
+import { APP_REPO_URL, APP_REPO_NAME, CONTENT_REPO_URL } from "@/lib/site"
 
 export function Footer() {
+  const { t } = useLanguage()
   return (
     <footer className="border-t border-border/40 bg-muted/30 mt-auto">
       <div className="container max-w-screen-2xl mx-auto px-4 py-6 md:py-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <BookOpen className="h-5 w-5 text-primary" />
-            <span className="font-medium">KK 科幻坊</span>
+            <span className="font-medium">{t('siteTitle')}</span>
           </div>
-          <a
-            href={REPO_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Github className="h-5 w-5" />
-            <span>BiscuitCoder/github_novel_read</span>
-          </a>
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center md:justify-end gap-3 min-w-0 text-sm text-muted-foreground">
+            <a href={CONTENT_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+              {t('contentRepository')}
+            </a>
+            <a href="/third-party-notices.txt" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+              {t('licenses')}
+            </a>
+            <a href={APP_REPO_URL} target="_blank" rel="noopener noreferrer" aria-label={t('sourceCode')}
+              className="inline-flex items-center gap-2 hover:text-foreground break-all">
+              <Github className="h-5 w-5 shrink-0" />
+              <span>{APP_REPO_NAME}</span>
+            </a>
+          </div>
         </div>
-        <div className="mt-4 pt-4 border-t border-border/40 text-center text-sm text-muted-foreground">
-          <p>输入带 txt 的仓库地址，自动生成分类与阅读页面 · © {new Date().getFullYear()}</p>
-        </div>
+        <p className="mt-4 pt-4 border-t border-border/40 text-center text-sm text-muted-foreground">
+          {t('description')}
+        </p>
       </div>
     </footer>
   )

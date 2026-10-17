@@ -6,7 +6,9 @@ import { cn } from '@/lib/utils'
 import { GitHubFile } from '@/lib/github'
 import { estimateReadingTime } from '@/lib/reading-time'
 import { getStorageKey, loadProgress } from '@/lib/reading-progress'
+import { getBookPath } from '@/lib/book-path'
 import { AbstractLineSvg } from '@/components/abstract-line-svg'
+import { useLanguage } from '@/components/language-provider'
 
 /**
  * 若标题中包含书名号《》，则只提取书名显示（不含《》）；否则原样返回
@@ -20,22 +22,23 @@ function formatDisplayTitle(rawTitle: string): string {
 interface BookCoverProps {
   book: GitHubFile
   author: string
-  repoKey: string
   onClick: () => void
 }
 
-export function BookCover({ book, author, repoKey, onClick }: BookCoverProps) {
-  const rawTitle = book.name.replace(/\.(txt|md)$/, '')
+export function BookCover({ book, author, onClick }: BookCoverProps) {
+  const { t } = useLanguage()
+  const rawTitle = book.name.replace(/\.(txt|md)$/i, '')
+  const bookPath = getBookPath(book, author)
   const title = formatDisplayTitle(rawTitle)
   const sizeKb = (book.size / 1024).toFixed(1)
-  const readingTime = estimateReadingTime(book.size)
+  const readingTime = estimateReadingTime(book.size, t)
 
   const [progress, setProgress] = useState(0)
   useEffect(() => {
-    const key = getStorageKey(repoKey, author, book.name)
+    const key = getStorageKey('', author, bookPath)
     const ratio = loadProgress(key)
     setProgress(Math.round(ratio * 1000) / 10)
-  }, [repoKey, author, book.name])
+  }, [author, bookPath])
 
   return (
     <div className="w-full perspective-[1200px] [perspective-origin:center_center]">

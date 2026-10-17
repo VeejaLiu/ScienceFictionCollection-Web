@@ -2,11 +2,23 @@
   "name": "my-project",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.2",
+  "engines": {
+    "node": ">=24.22.0 <25",
+    "pnpm": "9.15.2"
+  },
   "scripts": {
-    "dev": "next dev --port 3014",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint ."
+    "preinstall": "node scripts/check-runtime.mjs --install",
+    "check:runtime": "node scripts/check-runtime.mjs",
+    "dev": "node scripts/check-runtime.mjs && next dev --port 3014",
+    "build": "node scripts/check-runtime.mjs && node scripts/generate-third-party-notices.mjs && next build",
+    "start": "node scripts/check-runtime.mjs && next start",
+    "lint": "eslint .",
+    "test": "node scripts/check-runtime.mjs && node --test tests/*.test.mjs",
+    "typecheck": "node scripts/check-runtime.mjs && tsc --noEmit --incremental false",
+    "assets:icons": "node scripts/check-runtime.mjs && node scripts/generate-icons.mjs",
+    "licenses:generate": "node scripts/check-runtime.mjs && node scripts/generate-third-party-notices.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
