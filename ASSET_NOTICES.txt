@@ -49,3 +49,9 @@ Web 仅在构建时复制引用图片，不再保存第二套头像；本次不�
 来源网站的书目记录不等于封面开放许可，第三方封面仍属于相应权利人；
 本文件的软件许可证不授权小说正文、作者头像或出版社封面。
 删除素材仅影响当前工作树和后续新构建，原 Git 提交历史仍保留。
+
+6. 柯南·道尔头像（2026-10-17 新增）
+内容仓库 metadata/avatars/013.webp 来自 Walter Benington 于1914年拍摄的肖像，
+仅缩小尺寸并转为 WebP。原图在 Wikimedia Commons 标注为公有领域：
+https://commons.wikimedia.org/wiki/File:Arthur_Conan_Doyle_by_Walter_Benington,_1914.png
+原图及转换后图片摘要保存在内容仓库 metadata/avatars/sources.json。

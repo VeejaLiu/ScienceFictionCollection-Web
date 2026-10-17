@@ -18,6 +18,7 @@
 - [王晋康 · Wang Jinkang](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/wang-jinkang/)
 - [安迪·威尔 · Andy Weir](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/andy-weir/)
 - [亚瑟·克拉克 · Arthur C. Clarke](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/arthur-c-clarke/)
+- [亚瑟·柯南·道尔 · Arthur Conan Doyle](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/arthur-conan-doyle/)
 
 ## 更多
 
