@@ -14,7 +14,7 @@ test('all eight locales render complete interface messages without unresolved pl
   assert.equal(locales.length, 8)
   for (const locale of locales) {
     for (const key of Object.keys(messages['zh-CN'])) {
-      const rendered = translate(locale, key, { author: 'Isaac Asimov', count: 64, hours: 2, minutes: 5 })
+      const rendered = translate(locale, key, { title: 'Foundation', language: 'English', author: 'Isaac Asimov', count: 64, hours: 2, minutes: 5 })
       assert.ok(rendered.trim().length > 0, `${locale}.${key}`)
       assert.doesNotMatch(rendered, /\{\w+\}/, `${locale}.${key}`)
     }

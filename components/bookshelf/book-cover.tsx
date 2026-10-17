@@ -1,105 +1,41 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import { Eye } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { GitHubFile } from '@/lib/github'
+import { authorName, bookHref, type Author, type Book } from '@/lib/metadata'
 import { estimateReadingTime } from '@/lib/reading-time'
 import { getStorageKey, loadProgress } from '@/lib/reading-progress'
-import { getBookPath } from '@/lib/book-path'
-import { AbstractLineSvg } from '@/components/abstract-line-svg'
 import { useLanguage } from '@/components/language-provider'
+import { BookArtwork } from './book-artwork'
+import { EditionSwitcher } from './edition-switcher'
 
-/**
- * 若标题中包含书名号《》，则只提取书名显示（不含《》）；否则原样返回
- */
-function formatDisplayTitle(rawTitle: string): string {
-  const matches = rawTitle.matchAll(/《([^》]+)》/g)
-  const titles = [...matches].map((m) => m[1])
-  return titles.length > 0 ? titles.join(' ') : rawTitle
-}
-
-interface BookCoverProps {
-  book: GitHubFile
-  author: string
-  onClick: () => void
-}
-
-export function BookCover({ book, author, onClick }: BookCoverProps) {
-  const { t } = useLanguage()
-  const rawTitle = book.name.replace(/\.(txt|md)$/i, '')
-  const bookPath = getBookPath(book, author)
-  const title = formatDisplayTitle(rawTitle)
-  const sizeKb = (book.size / 1024).toFixed(1)
-  const readingTime = estimateReadingTime(book.size, t)
-
+export function BookCover({ book, author, versions, onVersionChange }: { book: Book; author: Author; versions: Book[]; onVersionChange: (book: Book) => void }) {
+  const { locale, t } = useLanguage()
+  const readingTime = ['txt', 'md'].includes(book.format) ? estimateReadingTime(book.size, t) : book.format.toUpperCase()
   const [progress, setProgress] = useState(0)
   useEffect(() => {
-    const key = getStorageKey('', author, bookPath)
-    const ratio = loadProgress(key)
-    setProgress(Math.round(ratio * 1000) / 10)
-  }, [author, bookPath])
+    setProgress(Math.round(loadProgress(getStorageKey('', author.id, book.id)) * 1000) / 10)
+  }, [author.id, book.id])
 
-  return (
-    <div className="w-full perspective-[1200px] [perspective-origin:center_center]">
-      <div
-        onClick={onClick}
-        className="group shadow-[-6px_0px_20px_-4px_rgba(0,0,0,0.15)] hover:shadow-[0_10px_28px_-4px_rgba(0,0,0,0.2)] relative w-full cursor-pointer text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-sm overflow-visible transition-all duration-300 ease-out origin-[50%_50%] hover:shadow-xl active:scale-[0.98] [transform-style:preserve-3d] hover:rotate-y-[0deg] rotate-y-[25deg] hover:scale-95 scale-80"
-      >
-        {/* 书籍封面 - 整体 3D 效果：以书中心为轴，hover 时书向前倾斜如平放 */}
-        <div className="aspect-[3/4] flex flex-col relative bg-gradient-to-b from-amber-50 to-amber-100/80 dark:from-amber-950/20 dark:to-amber-900/25 border border-amber-200/80 dark:border-amber-800/20 rounded-sm overflow-hidden">
-        <AbstractLineSvg seed={rawTitle} />
-        {/* 书脊效果 - 左侧浅色边 */}
-        <div
-          className="absolute left-0 top-0 bottom-0 w-1.5 bg-gradient-to-b from-amber-200 to-amber-300 dark:from-amber-800/30 dark:to-amber-900/25 z-10"
-          aria-hidden
-        />
-
-        {/* 封面内容 */}
-        <div className="flex-1 flex flex-col items-left justify-start p-4 md:p-8 relative z-10">
-          <b className="font-serif font-bold font-semibold text-3xl text-left line-clamp-3 break-words leading-relaxed text-amber-800 dark:text-amber-300 text-center">
-            {title}
-          </b>
-        </div>
-
-        {/* 底部信息 - 有进度时用进度条替代上边框 */}
-        <div
-          className={cn(
-            'flex flex-col gap-2 px-3 py-2 bg-amber-100/50 dark:bg-amber-900/20',
-            progress > 0
-              ? ''
-              : 'border-t border-amber-200/90 dark:border-amber-800/20'
-          )}
-        >
-          {progress > 0 && (
-            <div className="h-0.5 min-w-0 -mx-3 -mt-2 overflow-hidden bg-amber-200/90 dark:bg-amber-800/30">
-              <div
-                className="h-full bg-amber-500/80 dark:bg-amber-500/70 transition-[width] duration-150"
-                style={{ width: `${Math.min(100, progress)}%` }}
-              />
-            </div>
-          )}
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[10px] text-amber-800 dark:text-amber-400">
-              {readingTime}
-            </span>
-            <div className="flex items-center gap-2">
-            {/* <span className="text-[10px] text-amber-800 dark:text-amber-500/90">
-              {sizeKb} KB
-            </span> */}
-
-              {progress > 0 && (
-              <span className="flex items-center gap-1 text-[10px] tabular-nums text-amber-800 dark:text-amber-400">
-                <Eye className="size-3 shrink-0" />
-                {progress.toFixed(0)}%
-              </span>
-              )}
-
-            </div>
-          </div>
-        </div>
+  return <div className="w-full max-w-60 mx-auto py-3 perspective-[1200px]">
+    <Link href={bookHref(book)} prefetch={false} aria-label={book.title}
+      className="group block relative w-full rounded-sm shadow-[-6px_0px_20px_-4px_rgba(0,0,0,0.15)] transition-transform duration-300 rotate-y-[15deg] hover:rotate-y-0 hover:-translate-y-1 focus-visible:outline-2 focus-visible:outline-ring focus-visible:outline-offset-4">
+      <BookArtwork book={book} author={author} />
+      <div className="relative rounded-b-sm border border-amber-200 bg-amber-100 text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200">
+        {progress > 0 && <div className="h-0.5 overflow-hidden bg-amber-200 dark:bg-amber-800" aria-hidden>
+          <div className="h-full bg-amber-500" style={{ width: `${Math.min(100, progress)}%` }} />
+        </div>}
+        {book.cover && book.coverStyle !== 'artwork' && <div className="px-3 pt-3">
+          <b lang={book.language} className="block text-sm leading-snug line-clamp-2">{book.title}</b>
+          <span className="mt-1 block text-[11px] leading-relaxed">{authorName(author, locale)}</span>
+        </div>}
+        <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1 px-3 py-2 text-[11px] leading-relaxed">
+          <span>{readingTime}</span>
+          {progress > 0 && <span className="flex items-center gap-1 tabular-nums"><Eye className="size-3 shrink-0" />{progress.toFixed(0)}%</span>}
         </div>
       </div>
-    </div>
-  )
+    </Link>
+    <EditionSwitcher book={book} versions={versions} onChange={onVersionChange} />
+  </div>
 }

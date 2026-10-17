@@ -2,18 +2,36 @@
 
 [ScienceFictionCollection](https://github.com/VeejaLiu/ScienceFictionCollection) 的配套在线阅读网站，由 VeejaLiu 独立维护。
 
-本仓库负责阅读器应用，小说正文继续存放在内容仓库中。站点只读取该内容仓库，不提供切换其他 GitHub 仓库的入口。
+**[在线阅读](https://veejaliu.github.io/ScienceFictionCollection-Web/)** · **[小说与元信息仓库](https://github.com/VeejaLiu/ScienceFictionCollection)** · **[发布状态](https://github.com/VeejaLiu/ScienceFictionCollection-Web/actions/workflows/pages.yml)**
+
+| 仓库 | 负责内容 |
+| --- | --- |
+| [ScienceFictionCollection](https://github.com/VeejaLiu/ScienceFictionCollection) | 小说原文、作者资料、作品语言版本、头像与封面 |
+| [ScienceFictionCollection-Web](https://github.com/VeejaLiu/ScienceFictionCollection-Web)（本仓库） | 阅读体验、界面语言、版本选择、SEO 与网站发布 |
+
+本仓库负责阅读器应用，小说正文继续存放在内容仓库的作者、系列目录中。目录、姓名、头像和封面统一由内容仓库的 `metadata/` 维护。站点只使用这份元信息，不提供切换其他仓库的入口。
 
 ## 功能
 
-- 按作者浏览作品，递归读取多层系列目录，例如基地系列、机器人系列和银河帝国系列。
-- TXT、Markdown 文件的在线文本阅读，保留完整目录路径，阅读链接可直接打开或刷新。
-- 在当前浏览器保存阅读进度；不同系列中的同名作品分别记录。
-- 简体中文、繁体中文、英文、法语、德语、俄语、日语和韩语界面。语言偏好通过 Cookie 保存，作者名、书名、系列名和小说正文保留原文。
-- 明暗主题切换、基于系统字体的界面与阅读排版。
-- 从 Lucide BookOpen 生成站点图标，并在页尾提供第三方许可入口。
+- metadata 通过 `directory` 和 `path` 明确绑定作者目录、系列目录及作品文件，网页通过可读 slug 链接，内部关联仍使用稳定 ID。
+- 首页直接展示默认作者的作品，左侧切换作者；作品支持书架和列表两种视图，并在浏览器内记住选择。
+- 作者头像、默认姓名、多语言姓名、简短介绍与作品封面由内容仓库统一维护。当前登记 12 位作者、210 组作品和 211 个作品文件，已为 61 条文件记录整理封面（其中 6 张来自对应 EPUB）；头像最长边 160 像素、封面不超过 600 × 900 像素，统一保存为 WebP。封面可使用对应 EPUB 的内嵌图片或已核对的出版参考封面，出处与版本说明由 metadata 记录；未核实的作品使用生成式封面。
+- 简体中文、繁体中文、英文、法语、德语、俄语、日语、韩语界面；作者名称按 metadata 对应语言显示。第一版已录入简中、繁中、英文姓名，其他名称可继续补充。
+- 目录只加载元信息；打开某本书后，浏览器自动请求这一本 TXT/Markdown 正文并恢复阅读进度，无需再次点击。EPUB/PDF 提供原始文件链接。
+- 通过稳定作者 id 和作品 id 保存当前浏览器的阅读进度；不提供账号或跨设备同步。
+- 纯静态导出，适配 GitHub Pages 项目站；构建不读取、下载或打包小说正文。
 
-目前不解析 EPUB 或 PDF，也不提供账号、跨设备进度同步或正文自动翻译。
+## SEO 与静态页面
+
+首页、作者页 `/authors/<slug>/` 和作品页 `/books/<slug>/` 都在构建时生成真实 HTML，包含名称、目录链接、封面及作品详情。搜索引擎无需等待浏览器获取元信息。
+
+同一作品的多语言正文通过 metadata 中的 `workId` 关联；每个实际文件保留独立 ID、slug 和语言标记。目录和阅读页均按“当前语言 → 英文 → 任一已有语言”选择版本，每本书下方及阅读页都提供版本切换，手动选择会保存在当前浏览器。当前收录文件均标为简体中文，后续英文等版本需实际收录对应文件。
+
+作者和作品使用有意义的公开 slug（例如 `/authors/liu-cixin/`、`/books/三体/`），内部关联使用稳定的作品与文件 ID，阅读进度按文件 ID 保存；修改显示名称不会自动改变网址。
+
+每个作者和作品有独立标题、描述、canonical；作者/作品分别输出 Person/Book JSON-LD，作品封面用于 Open Graph 分享信息。构建还生成 `sitemap.xml` 和 `robots.txt`，已有空正文记录会标为 noindex 并从 sitemap 排除。
+
+SEO 主语言为简体中文，界面语言切换不会生成重复的语言 URL。正文按需加载，不做全文索引。GitHub Pages 项目站的 robots 文件位于项目子路径，不替代域名根路径的 robots 设置。
 
 ## 开发环境
 
@@ -25,6 +43,7 @@
 `.nvmrc` 和 `.node-version` 固定本地开发版本；`package.json`、`.npmrc` 和运行时检查脚本共同约束安装、启动、测试与构建环境。升级 Node 或包管理器时，需要同时更新这些声明并重新验证。
 
 ```bash
+git clone https://github.com/VeejaLiu/ScienceFictionCollection.git
 git clone https://github.com/VeejaLiu/ScienceFictionCollection-Web.git
 cd ScienceFictionCollection-Web
 nvm install
@@ -38,18 +57,22 @@ pnpm dev --hostname 127.0.0.1
 
 如果本机没有匹配的 pnpm，可以将命令中的 `pnpm` 替换为 `npx --yes pnpm@9.15.2`，无需更改其他项目使用的全局包管理器。
 
-本地运行不需要配置环境变量。目录和正文通过 GitHub API、`raw.githubusercontent.com` 读取，需要能访问相应网络服务；请求会受到 GitHub 可用性、缓存与限流的影响。阅读进度保存在当前站点的浏览器本地存储中，不会上传到服务器。
+默认从同级 `../ScienceFictionCollection/metadata` 读取 JSON 和引用图片，也可在 `.env.local` 设置 `COLLECTION_METADATA_DIR` 指定其他 metadata 目录，见 [.env.example](.env.example)。构建只需要 metadata 目录，无需读取或检出小说正文。
+
+内容仓库元信息变更后执行 `pnpm metadata:prepare`，新增作者/作品路由后重启开发服务。同步正文文件名、大小等字段的说明见内容仓库 [metadata/README.md](https://github.com/VeejaLiu/ScienceFictionCollection/blob/master/metadata/README.md)。
+
+生成的 `public/collection/` 和 `out/` 均已忽略，不提交重复资源。读者开始阅读时才需访问 `raw.githubusercontent.com`。阅读进度保存在当前浏览器，不会上传。
 
 ## 检查与构建
 
 ```bash
 pnpm check:runtime
 pnpm test
-pnpm typecheck
 pnpm build
+pnpm check:export
 ```
 
-测试覆盖系列目录递归、完整阅读路径、进度键、界面语言、素材与许可文件，以及运行时版本限制。构建前会重新生成当前安装环境的第三方许可文件，TypeScript 错误会阻止构建。
+测试覆盖 metadata 路径绑定、姓名语言回退、数据校验、无正文的 metadata 独立读取、SEO 输出安全、界面语言、素材许可及运行时约束。构建前会同步元信息和当前环境的第三方许可文件，TypeScript 错误会阻止构建。
 
 生产模式预览：
 
@@ -58,30 +81,42 @@ pnpm build
 pnpm start
 ```
 
-生产服务默认使用端口 3000，也可以通过 `pnpm start --port 3014` 指定端口。应用使用 Next.js Server Actions，需要支持服务端运行的部署环境，不能直接作为纯静态站点发布。
+静态预览默认使用端口 3000，也可执行 `pnpm start --port 3015`。无需 Next.js 生产服务器。
+
+### GitHub Pages 项目站
+
+```bash
+pnpm build:pages
+pnpm start --port 3015
+```
+
+`build:pages` 将基础路径设置为 `/ScienceFictionCollection-Web`，规范地址默认使用 `https://veejaliu.github.io/ScienceFictionCollection-Web/`，生成 `out/` 和 `.nojekyll`。预览地址为 `http://127.0.0.1:3015/ScienceFictionCollection-Web/`。
+
+本站通过 [.github/workflows/pages.yml](.github/workflows/pages.yml) 自动发布到 [GitHub Pages](https://veejaliu.github.io/ScienceFictionCollection-Web/)。推送到本仓库 `master` 会运行测试、静态构建、导出检查和 Pages 部署。工作流使用 `.nvmrc` 中的 Node.js、固定 pnpm 9.15.2，以及锁文件安装依赖；构建只检出小说仓库的 `metadata/`，不会批量读取或打包小说正文。
+
+仅更新小说仓库元信息时，在 [Actions 发布页](https://github.com/VeejaLiu/ScienceFictionCollection-Web/actions/workflows/pages.yml) 点击 **Run workflow**。`content_ref` 默认是小说仓库的 `master`，也可以填写指定分支、标签或提交；运行摘要会记录两个仓库的实际提交。站点不会在每次访问时重新获取 metadata，需要重新发布才能更新目录和图片。
+
+更换域名或仓库名时，应同步修改工作流中的 `SITE_URL`、`scripts/build-pages.mjs` 的基础路径和默认地址，以及 `lib/site.ts`，然后重新构建。正文按阅读请求从小说仓库 `master` 获取，目录与正文的相关更新应先推送到小说仓库。
 
 ## 代码结构
 
 ```text
-app/                         页面、页面元信息和固定内容仓库的服务端操作
-components/bookshelf/        作者列表、分组书架、阅读页和阅读进度
-components/layout/           页头、页尾和语言入口
+app/authors/[slug]/            作者静态页及 SEO 信息
+app/books/[slug]/              作品静态详情页及 SEO 信息
+app/sitemap.ts, robots.ts    静态站点地图和 robots
+components/bookshelf/        作者列表、封面、书架与按需正文阅读
 components/language-provider.tsx
-                             界面语言状态与偏好保存
-lib/site.ts                  内容仓库与 Web 仓库信息
-lib/github.ts                GitHub 目录、递归书目和正文读取
-lib/book-path.ts             阅读路径与路径校验
+                             仅客户端界面语言状态与偏好保存
+lib/metadata.ts              元信息类型、结构校验、姓名回退及作品 URL
+lib/collection.ts            只读 metadata JSON 和引用图片
+lib/site.ts, seo.ts          发布地址、基础路径和结构化数据
 lib/i18n.ts                  八种界面的语言词条
-public/authors/              作者头像
-public/icon.svg              Lucide 派生站点图标
-public/third-party-notices.txt
-                             随站点发布的第三方许可文本
+public/collection/          从内容仓库生成的元信息和图片，不含正文
 licenses/                    许可原文、素材来源记录和依赖清单
-scripts/                     运行时检查、图标生成和许可生成
-tests/                       回归检查
+scripts/                     元信息准备、静态构建预览和素材维护
 ```
 
-增加界面文字时，应在 `lib/i18n.ts` 中为全部语言补充对应词条。内容仓库地址集中定义于 `lib/site.ts`，服务端不接受访问者指定其他仓库或任意正文下载地址。
+增加界面文字时，应为 `lib/i18n.ts` 的全部语言补充词条。修改作者姓名、头像或作品封面时，只编辑内容仓库 metadata，不在 Web 中另存一套数据。不保留旧的文件名推断、仓库切换或查询参数阅读路由。
 
 ## 素材与第三方许可
 
@@ -95,7 +130,7 @@ pnpm licenses:generate
 - 许可生成器从实际安装的依赖提取声明，包含包内附带的许可文件和已记录的上游许可补充。生成清单包含开发、服务端及平台专属依赖，不表示它们都会下发给浏览器。
 - 发布时应在实际发布平台按锁文件安装依赖后重新生成许可文件。MPL、LGPL、CC-BY 等许可的具体分发义务需要按发布内容履行。
 
-详细说明见 [ASSET_NOTICES.txt](ASSET_NOTICES.txt)、[素材来源记录](licenses/asset-sources.json) 和 [第三方许可文本](public/third-party-notices.txt)。软件许可证不构成对小说正文或作者头像的授权。
+详细说明见 [ASSET_NOTICES.txt](ASSET_NOTICES.txt)、[素材来源记录](licenses/asset-sources.json) 和 [第三方许可文本](public/third-party-notices.txt)。软件许可证不构成对小说正文、作者头像或出版社封面的授权；封面出处、参考版本和检索结果见 [内容仓库封面清单](https://github.com/VeejaLiu/ScienceFictionCollection/blob/master/metadata/covers/catalog.json)。
 
 ## 上游来源与应用授权
 

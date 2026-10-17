@@ -1,83 +1,23 @@
-'use client'
+"use client"
 
-import { Loader2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { useBookshelf } from './use-bookshelf'
+import { useLanguage } from '@/components/language-provider'
+import { authorName, type Author, type Book } from '@/lib/metadata'
 import { AuthorSidebar } from './author-sidebar'
 import { BooksGrid } from './books-grid'
-import { BookReader } from './book-reader'
-import { useLanguage } from '@/components/language-provider'
+import { AuthorProfile } from './author-profile'
 
-interface BookshelfProps {
-  mode?: 'home' | 'author' | 'book'
-}
-
-export function Bookshelf({
-  mode = 'home',
-}: BookshelfProps) {
-  const { t } = useLanguage()
-  const {
-    author,
-    book,
-    authors,
-    books,
-    loading,
-    error,
-    fileContent,
-    currentFile,
-    isReaderMode,
-    handleAuthorSelect,
-    handleBookClick,
-  } = useBookshelf(mode)
-
-  return (
-    <div
-      className={cn(
-        'flex flex-col w-full p-4 gap-4',
-        'min-h-[calc(100vh-8rem)]'
-      )}
-    >
-      <div className="relative flex-1 flex flex-col md:flex-row gap-4 min-h-0">
-        {loading && (
-          <div role="status" aria-label={t('loading')} className="absolute inset-0 flex items-center justify-center bg-background/70 z-50 backdrop-blur-sm rounded-xl">
-            <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          </div>
-        )}
-
-        {error && (
-          <div className="p-4 text-destructive bg-destructive/10 border border-destructive/20 rounded-xl text-sm">
-            {t(error)}
-          </div>
-        )}
-
-        {!error && !isReaderMode && (
-          <>
-            <AuthorSidebar
-              authors={authors}
-              selectedAuthor={author}
-              loading={loading}
-              onSelect={handleAuthorSelect}
-            />
-            <BooksGrid
-              books={books}
-              author={author}
-              onBookClick={handleBookClick}
-              loading={loading}
-            />
-          </>
-        )}
-
-        {!loading && !error && isReaderMode && fileContent && (
-          <BookReader
-            title={
-              currentFile?.name.replace(/\.(txt|md)$/i, '') ||
-              book.replace(/\.(txt|md)$/i, '')
-            }
-            author={author}
-            content={fileContent}
-          />
-        )}
+export function Bookshelf({ authors, author, books }: {
+  authors: Author[]; author: Author; books: Book[]
+}) {
+  const { locale } = useLanguage()
+  return <main className="w-full min-h-screen max-w-screen-2xl mx-auto p-4">
+    <h1 className="text-xl font-semibold mb-4">{authorName(author, locale)}</h1>
+    <div className="flex flex-col md:flex-row gap-4">
+      <AuthorSidebar authors={authors} selectedAuthor={author.id} />
+      <div className="flex-1 min-w-0 space-y-4">
+        <AuthorProfile author={author} />
+        <BooksGrid books={books} author={author} />
       </div>
     </div>
-  )
+  </main>
 }

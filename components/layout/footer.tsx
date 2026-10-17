@@ -2,7 +2,7 @@
 
 import { Github, BookOpen } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
-import { APP_REPO_URL, APP_REPO_NAME, CONTENT_REPO_URL } from "@/lib/site"
+import { APP_REPO_URL, APP_REPO_NAME, CONTENT_REPO_URL, withBasePath } from "@/lib/site"
 
 export function Footer() {
   const { t } = useLanguage()
@@ -18,7 +18,7 @@ export function Footer() {
             <a href={CONTENT_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
               {t('contentRepository')}
             </a>
-            <a href="/third-party-notices.txt" target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+            <a href={withBasePath('/third-party-notices.txt')} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
               {t('licenses')}
             </a>
             <a href={APP_REPO_URL} target="_blank" rel="noopener noreferrer" aria-label={t('sourceCode')}

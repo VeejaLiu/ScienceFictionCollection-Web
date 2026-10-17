@@ -1,27 +1,32 @@
 import { existsSync, readFileSync, readdirSync, realpathSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { execFileSync } from 'node:child_process'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const store = join(root, 'node_modules/.pnpm')
 if (!existsSync(store)) throw new Error('Install dependencies with pnpm before generating notices.')
 
 const packages = new Map()
-for (const directory of readdirSync(store)) {
-  const modules = join(store, directory, 'node_modules')
-  if (!existsSync(modules)) continue
-  for (const entry of readdirSync(modules)) {
-    const candidates = entry.startsWith('@')
-      ? readdirSync(join(modules, entry)).map((name) => join(modules, entry, name))
-      : [join(modules, entry)]
-    for (const candidate of candidates) {
-      if (!existsSync(join(candidate, 'package.json'))) continue
-      const location = realpathSync(candidate)
-      const pkg = JSON.parse(readFileSync(join(location, 'package.json'), 'utf8'))
-      if (pkg.name && pkg.version) packages.set(`${pkg.name}@${pkg.version}`, { pkg, location })
+const installed = JSON.parse(execFileSync('pnpm', ['list', '--depth', 'Infinity', '--json'], {
+  cwd: root, encoding: 'utf8', maxBuffer: 20 * 1024 * 1024, shell: process.platform === 'win32',
+}))
+const visited = new Set()
+function visitDependencies(node) {
+  for (const kind of ['dependencies', 'devDependencies', 'optionalDependencies']) {
+    for (const dependency of Object.values(node[kind] || {})) {
+      if (!dependency.path || !existsSync(join(dependency.path, 'package.json'))) continue
+      const location = realpathSync(dependency.path)
+      if (!visited.has(location)) {
+        visited.add(location)
+        const pkg = JSON.parse(readFileSync(join(location, 'package.json'), 'utf8'))
+        if (pkg.name && pkg.version) packages.set(`${pkg.name}@${pkg.version}`, { pkg, location })
+      }
+      visitDependencies(dependency)
     }
   }
 }
+for (const project of installed) visitDependencies(project)
 
 function noticeFiles(directory, prefix = '') {
   const files = []

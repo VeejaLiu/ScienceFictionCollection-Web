@@ -704,15 +704,6 @@
     ]
   },
   {
-    "name": "@tailwindcss/oxide-darwin-x64",
-    "version": "4.2.0",
-    "license": "MIT",
-    "repository": "git+https://github.com/tailwindlabs/tailwindcss.git",
-    "notices": [
-      "LICENSE"
-    ]
-  },
-  {
     "name": "@tailwindcss/oxide",
     "version": "4.2.0",
     "license": "MIT",
@@ -834,15 +825,6 @@
     "version": "19.2.14",
     "license": "MIT",
     "repository": "https://github.com/DefinitelyTyped/DefinitelyTyped.git",
-    "notices": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "@vercel/analytics",
-    "version": "1.6.1",
-    "license": "MPL-2.0",
-    "repository": "github:vercel/analytics",
     "notices": [
       "LICENSE"
     ]
@@ -1222,15 +1204,6 @@
     "version": "4.0.0",
     "license": "MIT",
     "repository": "lydell/js-tokens",
-    "notices": [
-      "LICENSE"
-    ]
-  },
-  {
-    "name": "lightningcss-darwin-x64",
-    "version": "1.31.1",
-    "license": "MPL-2.0",
-    "repository": "https://github.com/parcel-bundler/lightningcss.git",
     "notices": [
       "LICENSE"
     ]

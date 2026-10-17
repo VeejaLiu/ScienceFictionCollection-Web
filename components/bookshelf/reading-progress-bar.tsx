@@ -1,18 +1,14 @@
 'use client'
 
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
-import { getStorageKey, loadProgress, saveProgress } from '@/lib/reading-progress'
+import { loadProgress, saveProgress } from '@/lib/reading-progress'
 
 interface ReadingProgressBarProps {
   children: React.ReactNode
+  storageKey: string
 }
 
-export function ReadingProgressBar({ children }: ReadingProgressBarProps) {
-  const searchParams = useSearchParams()
-  const author = searchParams.get('author') || ''
-  const name = searchParams.get('name') || ''
-  const storageKey = getStorageKey('', author, name)
+export function ReadingProgressBar({ children, storageKey }: ReadingProgressBarProps) {
   const [progress, setProgress] = useState(0)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastValidProgressRef = useRef(0)

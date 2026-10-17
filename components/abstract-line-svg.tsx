@@ -19,8 +19,10 @@ function hashStr(s: string): number {
  * seeded 随机数 [0, 1)
  */
 function seeded(seed: number): number {
-  const x = Math.sin(seed) * 10000
-  return x - Math.floor(x)
+  let x = seed | 0
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b)
+  x = Math.imul(x ^ (x >>> 16), 0x45d9f3b)
+  return ((x ^ (x >>> 16)) >>> 0) / 4294967296
 }
 
 /**
@@ -50,12 +52,12 @@ function generateLineSvg(seedStr: string): string {
     pts.push({ x, y })
   }
 
-  let d = `M ${pts[0].x} ${pts[0].y}`
+  let d = `M ${pts[0].x.toFixed(3)} ${pts[0].y.toFixed(3)}`
   for (let i = 1; i < pts.length; i++) {
-    d += ` L ${pts[i].x} ${pts[i].y}`
+    d += ` L ${pts[i].x.toFixed(3)} ${pts[i].y.toFixed(3)}`
   }
 
-  const path = `<path d="${d}" fill="none" stroke="${color}" stroke-width="${strokeWidth}" opacity="${opacity}" stroke-linecap="round" stroke-linejoin="round"/>`
+  const path = `<path d="${d}" fill="none" stroke="${color}" stroke-width="${strokeWidth.toFixed(3)}" opacity="${opacity.toFixed(3)}" stroke-linecap="round" stroke-linejoin="round"/>`
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice">${path}</svg>`
 }
 

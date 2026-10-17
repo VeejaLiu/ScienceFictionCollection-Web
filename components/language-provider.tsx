@@ -1,11 +1,11 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { localeCookie, resolveLocale, translate, type Locale, type MessageKey } from '@/lib/i18n'
 
 type LanguageContextValue = {
   locale: Locale
+  ready: boolean
   setLocale: (locale: string) => void
   t: (key: MessageKey, values?: Record<string, string | number>) => string
 }
@@ -17,23 +17,26 @@ export function LanguageProvider({ initialLocale, children }: {
   children: React.ReactNode
 }) {
   const [locale, setLanguage] = useState(initialLocale)
-  const router = useRouter()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    const saved = document.cookie.split('; ').find((part) => part.startsWith(`${localeCookie}=`))?.split('=')[1]
+    if (saved) setLanguage(resolveLocale(saved))
+    setReady(true)
+  }, [])
 
   useEffect(() => {
     document.documentElement.lang = locale
-    document.title = translate(locale, 'siteTitle')
   }, [locale])
 
   const setLocale = (value: string) => {
     const next = resolveLocale(value)
     document.cookie = `${localeCookie}=${next}; Path=/; Max-Age=31536000; SameSite=Lax`
     setLanguage(next)
-    // Refresh server-rendered metadata while retaining the current book and scroll position.
-    router.refresh()
   }
 
   return (
-    <LanguageContext.Provider value={{ locale, setLocale, t: (key, values) => translate(locale, key, values) }}>
+    <LanguageContext.Provider value={{ locale, ready, setLocale, t: (key, values) => translate(locale, key, values) }}>
       {children}
     </LanguageContext.Provider>
   )
