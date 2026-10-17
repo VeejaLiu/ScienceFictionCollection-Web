@@ -21,7 +21,8 @@
     "test": "node scripts/check-runtime.mjs && node --test tests/*.test.mjs",
     "typecheck": "node scripts/check-runtime.mjs && next typegen && tsc --noEmit --incremental false",
     "assets:icons": "node scripts/check-runtime.mjs && node scripts/generate-icons.mjs",
-    "licenses:generate": "node scripts/check-runtime.mjs && node scripts/generate-third-party-notices.mjs"
+    "licenses:generate": "node scripts/check-runtime.mjs && node scripts/generate-third-party-notices.mjs",
+    "docs:generate": "node scripts/check-runtime.mjs && node scripts/generate-readme.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
