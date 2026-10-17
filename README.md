@@ -21,4 +21,4 @@
 
 ## 更多
 
-[在线阅读](https://veejaliu.github.io/ScienceFictionCollection-Web/) · [小说仓库](https://github.com/VeejaLiu/ScienceFictionCollection) · [项目与开发说明](docs/PROJECT.md) · [发布状态](https://github.com/VeejaLiu/ScienceFictionCollection-Web/actions/workflows/pages.yml)
+[在线阅读](https://veejaliu.github.io/ScienceFictionCollection-Web/) · [小说仓库](https://github.com/VeejaLiu/ScienceFictionCollection) · [项目与开发说明](docs/PROJECT.md) · [授权范围](LICENSE-SCOPE.md) · [发布状态](https://github.com/VeejaLiu/ScienceFictionCollection-Web/actions/workflows/pages.yml)

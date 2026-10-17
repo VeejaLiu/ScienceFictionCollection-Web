@@ -122,3 +122,35 @@
         @apply bg-background text-foreground;
     }
 }
+
+/* Book columns follow the available panel width, including beside the author nav. */
+.books-panel {
+    container-type: inline-size;
+    container-name: books;
+}
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1rem;
+    row-gap: 1.5rem;
+    align-items: start;
+}
+@container books (max-width: 18rem) {
+    .books-grid { grid-template-columns: minmax(0, 1fr); }
+}
+@container books (min-width: 32rem) {
+    .books-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@container books (min-width: 46rem) {
+    .books-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@container books (min-width: 60rem) {
+    .books-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+}
+
+.author-profile-compact { display: block; }
+.author-profile-desktop { display: none; }
+@media (min-width: 768px) and (min-height: 501px) {
+    .author-profile-compact { display: none; }
+    .author-profile-desktop { display: block; }
+}

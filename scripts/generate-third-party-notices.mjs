@@ -53,8 +53,8 @@ The copied shadcn/ui components are covered by the shadcn MIT license below.
 Site SVG/PNG icons are generated from Lucide BookOpen by scripts/generate-icons.mjs;
 Lucide ISC and Feather MIT notices are reproduced below.
 Typography uses fonts installed on the visitor's device. No font files are bundled.
-Author portraits and literary works are outside this notice collection and have
-not been cleared by the dependency licenses reproduced here.
+Author portraits, literary works and publisher cover art are outside this notice
+collection and have not been cleared by the dependency licenses reproduced here.
 
 This file is generated from installed packages, including their bundled license
 files. It includes development/server tools and does not imply every listed
@@ -65,7 +65,7 @@ when distributing binaries; retain their README license tables and version lists
 See licenses/asset-sources.json and ASSET_NOTICES.txt for maintenance instructions.
 `
 
-const sections = [intro]
+const sections = [intro, '\nApplication and content license scope\n\n' + readFileSync(join(root, 'LICENSE-SCOPE.md'), 'utf8')]
 const inventory = []
 function append(title, text) {
   sections.push(`\n${'='.repeat(78)}\n${title}\n${'='.repeat(78)}\n\n${text.trimEnd()}\n`)
@@ -81,7 +81,22 @@ for (const [id, { pkg, location }] of [...packages].sort(([a], [b]) => a.localeC
   // Some npm packages declare a license but omit its text. Retain the matching
   // repository/family license, and identify that provenance explicitly.
   if (notices.length === 0 && pkg.license === 'MIT') {
+    for (const readme of readdirSync(location).filter((name) => /^readme(?:\.|$)/i.test(name))) {
+      const text = readFileSync(join(location, readme), 'utf8')
+      const heading = text.search(/^#{1,3}\s+License\s*$/im)
+      const section = heading >= 0 ? text.slice(heading) : ''
+      if (section.includes('Permission is hereby granted') && section.includes('THE SOFTWARE IS PROVIDED')) {
+        notices.push({ path: `${readme} (License section)`, text: section })
+        break
+      }
+    }
+  }
+  if (notices.length === 0 && pkg.license === 'MIT') {
     let fallback
+    if (pkg.name === 'marks-pane' && pkg.version === '1.0.9') {
+      notices.push({ path: 'published package.json (MIT declaration; no separate license file shipped)', text: JSON.stringify(pkg, null, 2) })
+      notices.push({ path: 'SPDX MIT standard template (not an original copyright notice)', text: readFileSync(join(root, 'licenses/MIT-standard-text.txt'), 'utf8') })
+    }
     if (pkg.name.startsWith('@next/')) fallback = 'nextjs-LICENSE.txt'
     else if (pkg.name.startsWith('@radix-ui/')) fallback = 'radix-ui-LICENSE.txt'
     else if (pkg.name.startsWith('embla-carousel')) fallback = 'embla-carousel-LICENSE.txt'

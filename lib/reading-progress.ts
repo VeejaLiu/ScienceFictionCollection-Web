@@ -26,3 +26,11 @@ export function saveProgress(key: string, ratio: number) {
     // ignore
   }
 }
+
+
+export function readScrollMetrics() {
+  if (typeof window === 'undefined') return { scrollTop: 0, maxScroll: 0 }
+  const el = document.scrollingElement ?? document.documentElement
+  const scrollHeight = Math.max(document.body?.scrollHeight ?? 0, document.documentElement.scrollHeight)
+  return { scrollTop: window.scrollY ?? el.scrollTop ?? 0, maxScroll: Math.max(scrollHeight - document.documentElement.clientHeight, 0) }
+}

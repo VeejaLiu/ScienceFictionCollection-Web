@@ -38,3 +38,11 @@ test('distinguish Chinese scripts and match regional variants of other languages
   assert.deepEqual(languageVersions([zh, hant, en], 'zh-TW'), [hant])
   assert.deepEqual(languageVersions([en, fr], 'en-US'), [en])
 })
+
+
+test('a direct same-language file link keeps its format; explicit foreign-language selection is honored', () => {
+  const epub = edition('chinese-epub', 'zh-CN', 'epub')
+  assert.equal(readingVersion(epub, [zh, epub], 'zh-CN', zh.id)?.id, epub.id)
+  assert.equal(readingVersion(fr, [zh, en, fr], 'zh-CN', fr.id)?.id, fr.id)
+  assert.equal(readingVersion(fr, [zh, en, fr], 'en')?.id, en.id)
+})

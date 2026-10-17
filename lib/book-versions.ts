@@ -31,7 +31,8 @@ export function booksForLocale(books: Book[], locale: string) {
   })
 }
 
-export function readingVersion(book: Book, versions: Book[], locale: string) {
+export function readingVersion(book: Book, versions: Book[], locale: string, explicitId?: string) {
+  if (explicitId === book.id && versions.some((candidate) => candidate.id === book.id && candidate.workId === book.workId)) return book
   const choices = languageVersions(versions.filter((candidate) => candidate.workId === book.workId), locale)
   return choices.find((candidate) => candidate.id === book.id)
     || choices.find((candidate) => candidate.format === book.format)
@@ -44,4 +45,11 @@ export function readingVersion(book: Book, versions: Book[], locale: string) {
 export function preferredVersion(versions: Book[], locale: string) {
   const choices = languageVersions(versions, locale)
   return choices.find((book) => book.format === 'txt') || choices.find((book) => book.format === 'md') || choices[0] || null
+}
+
+
+export function contentLanguageName(tag: string, locale: string) {
+  const language = contentLanguage(tag)
+  const displayTag = language === 'zh-CN' ? 'zh-Hans' : language === 'zh-TW' ? 'zh-Hant' : tag
+  try { return new Intl.DisplayNames([locale], { type: 'language' }).of(displayTag) || tag } catch { return tag }
 }

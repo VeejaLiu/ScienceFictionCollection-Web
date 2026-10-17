@@ -15,14 +15,14 @@ export function Footer() {
             <span className="font-medium">{t('siteTitle')}</span>
           </div>
           <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center md:justify-end gap-3 min-w-0 text-sm text-muted-foreground">
-            <a href={CONTENT_REPO_URL} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+            <a href={CONTENT_REPO_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center hover:text-foreground">
               {t('contentRepository')}
             </a>
-            <a href={withBasePath('/third-party-notices.txt')} target="_blank" rel="noopener noreferrer" className="hover:text-foreground">
+            <a href={withBasePath('/third-party-notices.txt')} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center hover:text-foreground">
               {t('licenses')}
             </a>
             <a href={APP_REPO_URL} target="_blank" rel="noopener noreferrer" aria-label={t('sourceCode')}
-              className="inline-flex items-center gap-2 hover:text-foreground break-all">
+              className="inline-flex min-h-11 items-center gap-2 hover:text-foreground break-all">
               <Github className="h-5 w-5 shrink-0" />
               <span>{APP_REPO_NAME}</span>
             </a>

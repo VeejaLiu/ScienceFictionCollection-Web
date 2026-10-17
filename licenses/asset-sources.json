@@ -55,6 +55,16 @@
       "file": "react-LICENSE.txt",
       "source": "installed react@19.2.4/LICENSE",
       "note": "client-only@0.0.1 declares MIT and links to React but ships no license text. Preserve its published metadata and the React family license without claiming an exact package-specific copyright notice."
+    },
+    "marks-pane": {
+      "packageVersion": "1.0.9",
+      "source": "published marks-pane@1.0.9/package.json",
+      "declaredLicense": "MIT",
+      "author": "Fred Chasen",
+      "standardText": "MIT-standard-text.txt",
+      "standardTextSource": "https://github.com/spdx/license-list-data/blob/main/text/MIT.txt",
+      "standardTextBlobSha": "d817195dad53ec992418c28ffca5fbd1cd86502a",
+      "note": "The package declares MIT but ships no separate license file. Preserve its metadata and the SPDX standard template; the template placeholder is not an invented original copyright notice."
     }
   },
   "fonts": {

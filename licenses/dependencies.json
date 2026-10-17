@@ -839,6 +839,15 @@
     ]
   },
   {
+    "name": "@xmldom/xmldom",
+    "version": "0.8.15",
+    "license": "MIT",
+    "repository": "git://github.com/xmldom/xmldom.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "aria-hidden",
     "version": "1.2.6",
     "license": "MIT",
@@ -921,10 +930,37 @@
     ]
   },
   {
+    "name": "core-js",
+    "version": "3.50.0",
+    "license": "MIT",
+    "repository": "git+https://github.com/zloirock/core-js.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "core-util-is",
+    "version": "1.0.3",
+    "license": "MIT",
+    "repository": "git://github.com/isaacs/core-util-is",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "csstype",
     "version": "3.2.3",
     "license": "MIT",
     "repository": "https://github.com/frenic/csstype",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "d",
+    "version": "1.0.2",
+    "license": "ISC",
+    "repository": "medikoo/d",
     "notices": [
       "LICENSE"
     ]
@@ -1128,6 +1164,43 @@
     ]
   },
   {
+    "name": "epubjs",
+    "version": "0.3.93",
+    "license": "BSD-2-Clause",
+    "repository": "https://github.com/futurepress/epub.js",
+    "notices": [
+      "documentation/html/assets/fonts/LICENSE.txt",
+      "license"
+    ]
+  },
+  {
+    "name": "es5-ext",
+    "version": "0.10.64",
+    "license": "ISC",
+    "repository": "medikoo/es5-ext",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "es6-iterator",
+    "version": "2.0.3",
+    "license": "MIT",
+    "repository": "git://github.com/medikoo/es6-iterator.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "es6-symbol",
+    "version": "3.1.4",
+    "license": "ISC",
+    "repository": "medikoo/es6-symbol",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "escalade",
     "version": "3.2.0",
     "license": "MIT",
@@ -1137,10 +1210,37 @@
     ]
   },
   {
+    "name": "esniff",
+    "version": "2.0.1",
+    "license": "ISC",
+    "repository": "medikoo/esniff",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "event-emitter",
+    "version": "0.3.5",
+    "license": "MIT",
+    "repository": "git://github.com/medikoo/event-emitter.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "eventemitter3",
     "version": "4.0.7",
     "license": "MIT",
     "repository": "git://github.com/primus/eventemitter3.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "ext",
+    "version": "1.7.0",
+    "license": "ISC",
+    "repository": "https://github.com/medikoo/es5-ext#ext",
     "notices": [
       "LICENSE"
     ]
@@ -1182,6 +1282,24 @@
     ]
   },
   {
+    "name": "immediate",
+    "version": "3.0.6",
+    "license": "MIT",
+    "repository": "git://github.com/calvinmetcalf/immediate.git",
+    "notices": [
+      "LICENSE.txt"
+    ]
+  },
+  {
+    "name": "inherits",
+    "version": "2.0.4",
+    "license": "ISC",
+    "repository": "git://github.com/isaacs/inherits",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "input-otp",
     "version": "1.4.2",
     "license": "MIT",
@@ -1197,6 +1315,15 @@
     "repository": "https://github.com/mbostock/internmap.git",
     "notices": [
       "LICENSE"
+    ]
+  },
+  {
+    "name": "isarray",
+    "version": "1.0.0",
+    "license": "MIT",
+    "repository": "git://github.com/juliangruber/isarray.git",
+    "notices": [
+      "README.md (License section)"
     ]
   },
   {
@@ -1218,6 +1345,33 @@
     ]
   },
   {
+    "name": "jszip",
+    "version": "3.10.2",
+    "license": "(MIT OR GPL-3.0-or-later)",
+    "repository": "https://github.com/Stuk/jszip.git",
+    "notices": [
+      "LICENSE.markdown"
+    ]
+  },
+  {
+    "name": "lie",
+    "version": "3.1.1",
+    "license": "MIT",
+    "repository": "https://github.com/calvinmetcalf/lie.git",
+    "notices": [
+      "license.md"
+    ]
+  },
+  {
+    "name": "lie",
+    "version": "3.3.0",
+    "license": "MIT",
+    "repository": "https://github.com/calvinmetcalf/lie.git",
+    "notices": [
+      "license.md"
+    ]
+  },
+  {
     "name": "lightningcss-darwin-x64",
     "version": "1.31.1",
     "license": "MPL-2.0",
@@ -1231,6 +1385,15 @@
     "version": "1.31.1",
     "license": "MPL-2.0",
     "repository": "https://github.com/parcel-bundler/lightningcss.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "localforage",
+    "version": "1.10.0",
+    "license": "Apache-2.0",
+    "repository": "git://github.com/localForage/localForage.git",
     "notices": [
       "LICENSE"
     ]
@@ -1272,6 +1435,16 @@
     ]
   },
   {
+    "name": "marks-pane",
+    "version": "1.0.9",
+    "license": "MIT",
+    "repository": "https://github.com/fchasen/marks",
+    "notices": [
+      "published package.json (MIT declaration; no separate license file shipped)",
+      "SPDX MIT standard template (not an original copyright notice)"
+    ]
+  },
+  {
     "name": "nanoid",
     "version": "3.3.11",
     "license": "MIT",
@@ -1287,6 +1460,15 @@
     "repository": "https://github.com/pacocoursey/next-themes.git",
     "notices": [
       "license.md"
+    ]
+  },
+  {
+    "name": "next-tick",
+    "version": "1.1.0",
+    "license": "ISC",
+    "repository": "git://github.com/medikoo/next-tick.git",
+    "notices": [
+      "LICENSE"
     ]
   },
   {
@@ -1431,6 +1613,24 @@
     ]
   },
   {
+    "name": "pako",
+    "version": "1.0.11",
+    "license": "(MIT AND Zlib)",
+    "repository": "nodeca/pako",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "path-browserify",
+    "version": "1.0.1",
+    "license": "MIT",
+    "repository": "git://github.com/browserify/path-browserify.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "picocolors",
     "version": "1.1.1",
     "license": "ISC",
@@ -1464,6 +1664,15 @@
     "repository": "postcss/postcss",
     "notices": [
       "LICENSE"
+    ]
+  },
+  {
+    "name": "process-nextick-args",
+    "version": "2.0.1",
+    "license": "MIT",
+    "repository": "https://github.com/calvinmetcalf/process-nextick-args.git",
+    "notices": [
+      "license.md"
     ]
   },
   {
@@ -1584,6 +1793,15 @@
     ]
   },
   {
+    "name": "readable-stream",
+    "version": "2.3.8",
+    "license": "MIT",
+    "repository": "git://github.com/nodejs/readable-stream",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "recharts-scale",
     "version": "0.4.5",
     "license": "MIT",
@@ -1597,6 +1815,15 @@
     "version": "2.15.0",
     "license": "MIT",
     "repository": "git+https://github.com/recharts/recharts.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "safe-buffer",
+    "version": "5.1.2",
+    "license": "MIT",
+    "repository": "git://github.com/feross/safe-buffer.git",
     "notices": [
       "LICENSE"
     ]
@@ -1617,6 +1844,15 @@
     "repository": "git+https://github.com/npm/node-semver.git",
     "notices": [
       "LICENSE"
+    ]
+  },
+  {
+    "name": "setimmediate",
+    "version": "1.0.5",
+    "license": "MIT",
+    "repository": "YuzuJS/setImmediate",
+    "notices": [
+      "LICENSE.txt"
     ]
   },
   {
@@ -1642,6 +1878,15 @@
     "version": "1.2.1",
     "license": "BSD-3-Clause",
     "repository": "7rulnik/source-map-js",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "string_decoder",
+    "version": "1.1.1",
+    "license": "MIT",
+    "repository": "git://github.com/nodejs/string_decoder.git",
     "notices": [
       "LICENSE"
     ]
@@ -1710,6 +1955,15 @@
     ]
   },
   {
+    "name": "type",
+    "version": "2.7.3",
+    "license": "ISC",
+    "repository": "medikoo/type",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
     "name": "typescript",
     "version": "5.7.3",
     "license": "Apache-2.0",
@@ -1759,6 +2013,15 @@
     "version": "1.6.0",
     "license": "MIT",
     "repository": "https://github.com/facebook/react.git",
+    "notices": [
+      "LICENSE"
+    ]
+  },
+  {
+    "name": "util-deprecate",
+    "version": "1.0.2",
+    "license": "MIT",
+    "repository": "git://github.com/TooTallNate/util-deprecate.git",
     "notices": [
       "LICENSE"
     ]

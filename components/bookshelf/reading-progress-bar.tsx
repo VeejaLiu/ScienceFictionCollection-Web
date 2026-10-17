@@ -1,34 +1,22 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { loadProgress, saveProgress } from '@/lib/reading-progress'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { loadProgress, saveProgress, readScrollMetrics } from '@/lib/reading-progress'
 
 interface ReadingProgressBarProps {
   children: React.ReactNode
   storageKey: string
+  layoutKey?: string
+  layoutAnchor?: number | null
 }
 
-export function ReadingProgressBar({ children, storageKey }: ReadingProgressBarProps) {
+export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnchor }: ReadingProgressBarProps) {
   const [progress, setProgress] = useState(0)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastValidProgressRef = useRef(0)
   const lastResizeRef = useRef({ w: 0, h: 0 })
 
-  const getScrollMetrics = useCallback(() => {
-    if (typeof window === 'undefined') {
-      return { scrollTop: 0, maxScroll: 0 }
-    }
-    const el = document.scrollingElement ?? document.documentElement
-    const scrollTop = window.scrollY ?? el.scrollTop ?? 0
-    // 使用 documentElement.clientHeight 而非 window.innerHeight，避免移动端地址栏显隐导致的高度抖动
-    const viewportHeight = document.documentElement.clientHeight
-    const scrollHeight = Math.max(
-      document.body?.scrollHeight ?? 0,
-      document.documentElement.scrollHeight
-    )
-    const maxScroll = Math.max(scrollHeight - viewportHeight, 0)
-    return { scrollTop, maxScroll }
-  }, [])
+  const getScrollMetrics = useCallback(readScrollMetrics, [])
 
   const updateProgress = useCallback(() => {
     const { scrollTop, maxScroll } = getScrollMetrics()
@@ -49,14 +37,15 @@ export function ReadingProgressBar({ children, storageKey }: ReadingProgressBarP
     lastValidProgressRef.current = Math.round(ratio * 1000) / 10
     const scrollToRatio = () => {
       const { maxScroll } = getScrollMetrics()
-      const targetTop = ratio * maxScroll
+      const targetRatio = lastValidProgressRef.current / 100
+      const targetTop = targetRatio * maxScroll
       if (maxScroll > 0) {
         window.scrollTo({
           top: targetTop,
           behavior: 'smooth',
         })
       }
-      setProgress(Math.round(ratio * 1000) / 10)
+      setProgress(Math.round(targetRatio * 1000) / 10)
     }
     const rafId = window.requestAnimationFrame(() => {
       window.requestAnimationFrame(scrollToRatio)
@@ -85,6 +74,20 @@ export function ReadingProgressBar({ children, storageKey }: ReadingProgressBarP
     }
   }, [getScrollMetrics, storageKey, updateProgress])
 
+  useLayoutEffect(() => {
+    if (layoutAnchor == null) return
+    const restore = () => {
+      const { maxScroll } = getScrollMetrics()
+      lastValidProgressRef.current = layoutAnchor * 100
+      window.scrollTo({ top: layoutAnchor * maxScroll, behavior: 'instant' })
+      setProgress(Math.round(layoutAnchor * 1000) / 10)
+    }
+    restore()
+    // Restore again after the browser finishes reflow and scroll anchoring.
+    const frame = window.requestAnimationFrame(restore)
+    return () => window.cancelAnimationFrame(frame)
+  }, [layoutKey, layoutAnchor, getScrollMetrics])
+
   useEffect(() => {
     const handleScroll = () => {
       updateProgress()
@@ -106,12 +109,12 @@ export function ReadingProgressBar({ children, storageKey }: ReadingProgressBarP
   const pct = Math.min(100, Math.max(0, progress))
 
   return (
-    <div className="flex-1 min-h-0">
-      <div className="pb-5">
+    <div className="flex-1 min-h-0" style={{ overflowAnchor: 'none' }}>
+      <div className="pb-[calc(2rem+env(safe-area-inset-bottom))]">
         {children}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 py-0.5 px-3 border-t border-amber-200/60 dark:border-amber-800/30 bg-amber-100/80 dark:bg-amber-900/50 backdrop-blur-sm">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] px-3 border-t border-amber-200/60 dark:border-amber-800/30 bg-amber-100/80 dark:bg-amber-900/50 backdrop-blur-sm">
         <div className="flex-1 h-0.5 min-w-0 bg-amber-200/50 dark:bg-amber-800/30 rounded-full overflow-hidden">
           <div
             className="h-full bg-amber-500/80 dark:bg-amber-500/70 rounded-full transition-[width] duration-150"

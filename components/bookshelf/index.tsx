@@ -10,7 +10,7 @@ export function Bookshelf({ authors, author, books }: {
   authors: Author[]; author: Author; books: Book[]
 }) {
   const { locale } = useLanguage()
-  return <main className="w-full min-h-screen max-w-screen-2xl mx-auto p-4">
+  return <main className="w-full min-h-screen max-w-screen-2xl mx-auto p-3 sm:p-4">
     <h1 className="text-xl font-semibold mb-4">{authorName(author, locale)}</h1>
     <div className="flex flex-col md:flex-row gap-4">
       <AuthorSidebar authors={authors} selectedAuthor={author.id} />
