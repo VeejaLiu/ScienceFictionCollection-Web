@@ -6,7 +6,6 @@ import { BookOpen, Library, List } from 'lucide-react'
 import { BookCover } from './book-cover'
 import { authorName, bookHref, type Author, type Book } from '@/lib/metadata'
 import { useLanguage } from '@/components/language-provider'
-import { estimateReadingTime } from '@/lib/reading-time'
 import { preferredVersion } from '@/lib/book-versions'
 import { useEditionPreferences } from './use-edition-preferences'
 import { EditionSwitcher } from './edition-switcher'
@@ -67,7 +66,6 @@ export function BooksGrid({ books, author }: { books: Book[]; author: Author }) 
             <Link href={bookHref(book)} prefetch={false} className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-md px-3 py-4 hover:bg-muted focus-visible:outline-2 focus-visible:outline-ring">
               <span lang={book.language} className="min-w-0 flex-1 basis-40 font-medium break-words">{book.title}</span>
               <span className="text-xs text-muted-foreground">{book.format.toUpperCase()}</span>
-              {['txt', 'md'].includes(book.format) && <span className="text-xs text-muted-foreground">{estimateReadingTime(book.size, t)}</span>}
             </Link>
             <div className="px-3 pb-4 max-w-sm"><EditionSwitcher book={book} versions={versionsByWork.get(book.workId)!} onChange={(version) => preferences.select(version, locale)} /></div>
           </li>)}
