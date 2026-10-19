@@ -21,6 +21,14 @@ export function Header() {
     document.documentElement.classList.toggle('dark', next === 'dark')
     document.documentElement.style.colorScheme = next
     setTheme(next)
+    const sync = () => {
+      const palette = document.documentElement.dataset.readerPalette
+      setTheme(palette && palette !== 'auto' ? palette === 'dark' ? 'dark' : 'light' : document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+    }
+    sync()
+    const observer = new MutationObserver(sync)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-reader-palette'] })
+    return () => observer.disconnect()
   }, [])
 
   const toggleTheme = () => {
@@ -28,6 +36,7 @@ export function Header() {
     setTheme(next)
     document.documentElement.classList.toggle("dark", next === "dark")
     document.documentElement.style.colorScheme = next
+    window.dispatchEvent(new Event('reader-use-site-theme'))
     try { localStorage.setItem('reader-theme', next) } catch { /* Optional theme preference. */ }
   }
 

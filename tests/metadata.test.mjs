@@ -92,3 +92,18 @@ test('Chinese route parameters resolve both direct and static-export encoded slu
   assert.equal(routeSlug('liu-cixin'), 'liu-cixin')
   assert.equal(routeSlug('%broken'), '')
 })
+
+test('reviewed chapter titles must be exact prefixes confined to one line of a text edition', () => {
+  const valid = [{ prefix: '第二章 归途这时他们', title: '第二章 归途' }]
+  let [authors, books] = documents()
+  books['001'].books[0].chapterTitleCorrections = valid
+  assert.deepEqual(parseCatalog(authors, books).books[0].chapterTitleCorrections, valid)
+  for (const invalid of [null, [{ prefix: '第二章 归途', title: '第三章' }], [{ prefix: '标题\n正文', title: '标题' }], [{ prefix: '', title: '' }]]) {
+    ;[authors, books] = documents()
+    books['001'].books[0].chapterTitleCorrections = invalid
+    assert.throws(() => parseCatalog(authors, books), /chapterTitleCorrections/)
+  }
+  ;[authors, books] = documents()
+  Object.assign(books['001'].books[0], { format: 'epub', path: 'book.epub', chapterTitleCorrections: valid })
+  assert.throws(() => parseCatalog(authors, books), /chapterTitleCorrections/)
+})

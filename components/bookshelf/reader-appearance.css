@@ -1,0 +1,32 @@
+html[data-reader-palette="white"] { --background: #ffffff; --foreground: #242424; color-scheme: light !important; }
+html[data-reader-palette="paper"] { --background: #f6efdc; --foreground: #423a2f; color-scheme: light !important; }
+html[data-reader-palette="gray"] { --background: #e8eaed; --foreground: #30343a; color-scheme: light !important; }
+html[data-reader-palette="dark"] { --background: #202124; --foreground: #d8dadd; color-scheme: dark !important; }
+html[data-reader-palette]:not([data-reader-palette="auto"]) {
+  --primary: var(--foreground); --primary-foreground: var(--background);
+  --card: var(--background); --card-foreground: var(--foreground);
+  --popover: var(--background); --popover-foreground: var(--foreground);
+  --muted: color-mix(in oklab, var(--background) 94%, var(--foreground));
+  --muted-foreground: color-mix(in oklab, var(--foreground) 72%, var(--background));
+  --secondary: var(--muted); --secondary-foreground: var(--foreground);
+  --accent: color-mix(in oklab, var(--background) 90%, var(--foreground)); --accent-foreground: var(--foreground);
+  --border: color-mix(in oklab, var(--foreground) 18%, var(--background)); --input: var(--border);
+  --ring: color-mix(in oklab, var(--foreground) 50%, var(--background));
+}
+.book-reading-page {
+  --reader-gutter: 0px; --reader-page-width: 56rem;
+  max-width: none;
+  width: min(var(--reader-page-width), calc(100% - var(--reader-gutter)));
+  margin-inline-start: max(var(--reader-gutter), calc((100% - var(--reader-page-width)) / 2));
+  margin-inline-end: auto;
+}
+.book-reading-page[data-reading-width="narrow"] { --reader-page-width: 45rem; }
+.book-reading-page[data-reading-width="wide"] { --reader-page-width: 68rem; }
+@media (max-width: 767px) {
+  .book-reading-page { padding-inline: 1rem; }
+  .book-reading-page[data-reading-width="narrow"] { padding-inline: 1.5rem; }
+  .book-reading-page[data-reading-width="wide"] { padding-inline: 0.5rem; }
+}
+@media (min-width: 1024px) {
+  .book-reading-page { --reader-gutter: calc(max(1rem, calc((100vw - 80rem) / 2)) + 13rem); }
+}

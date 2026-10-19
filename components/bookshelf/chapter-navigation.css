@@ -1,0 +1,39 @@
+.reader-chapters-sidebar {
+  display: none;
+}
+
+.reader-chapters-list {
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.reader-chapters-trigger {
+  position: fixed;
+  left: 0.75rem;
+  bottom: calc(4rem + env(safe-area-inset-bottom));
+  z-index: 45;
+}
+
+@media (min-width: 1024px) {
+  .reader-chapters-sidebar {
+    display: flex;
+    position: fixed;
+    flex-direction: column;
+    top: 4.75rem;
+    bottom: 2.5rem;
+    left: 1rem;
+    width: 12rem;
+    z-index: 35;
+  }
+
+  .reader-chapters-trigger {
+    display: none;
+  }
+}
+
+@media (min-width: 1280px) {
+  .reader-chapters-sidebar {
+    left: max(1rem, calc((100vw - 80rem) / 2));
+  }
+}

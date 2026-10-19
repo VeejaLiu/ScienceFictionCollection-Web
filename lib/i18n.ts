@@ -1,3 +1,5 @@
+import { readerSettingMessages } from './reader-settings-messages.ts'
+
 export const locales = ['zh-CN', 'zh-TW', 'en', 'fr', 'de', 'ru', 'ja', 'ko'] as const
 export type Locale = typeof locales[number]
 export const defaultLocale: Locale = 'zh-CN'
@@ -8,6 +10,7 @@ export const localeNames: Record<Locale, string> = {
 }
 
 const zhCN = {
+  ...readerSettingMessages['zh-CN'],
   siteTitle: '科幻小说作品集',
   description: '按作者与系列浏览科幻小说，在线阅读并保存阅读进度。',
   language: '语言', theme: '切换主题', sourceCode: '网站源码', contentRepository: '小说仓库',
@@ -19,6 +22,8 @@ const zhCN = {
     coverSource: '封面来源',
     fontSize: "字号", smallerText: "减小字号", largerText: "增大字号", lineSpacing: "行距", compactSpacing: "紧凑", normalSpacing: "标准", wideSpacing: "宽松", contents: "目录", previousPage: "上一页", nextPage: "下一页", epubReader: "EPUB 阅读器", epubSection: "第 {current}/{total} 节",
     epubPage: "本节第 {current}/{total} 页",
+    readingSettings: '阅读设置',
+    detectingChapters: '正在识别章节…', noChapters: '未识别到章节', closeContents: '关闭目录', chooseChapter: '选择章节', beginning: '开篇',
     edition: '版本', chooseEdition: '切换《{title}》的版本',
     noLanguageVersion: '暂无可用的语言版本', fallbackLanguage: '当前语言暂无版本，显示{language}版本。',
   authorWorks: '{author} 的 {count} 部作品', chooseAuthorHint: '请选择一位作家',
@@ -33,6 +38,7 @@ type Messages = Record<MessageKey, string>
 export const messages: Record<Locale, Messages> = {
   'zh-CN': zhCN,
   'zh-TW': {
+    ...readerSettingMessages['zh-TW'],
     siteTitle: '科幻小說作品集', description: '依作者與系列瀏覽科幻小說，線上閱讀並儲存閱讀進度。',
     language: '語言', theme: '切換主題', sourceCode: '網站原始碼', contentRepository: '小說儲存庫',
     licenses: '第三方授權', startReading: '開始閱讀', sourceFile: '原始檔案', emptyBook: '暫未收錄正文', downloadOnly: '此格式請開啟原始檔案閱讀。',
@@ -43,6 +49,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: '封面來源',
     fontSize: "字級", smallerText: "縮小字級", largerText: "放大字級", lineSpacing: "行距", compactSpacing: "緊湊", normalSpacing: "標準", wideSpacing: "寬鬆", contents: "目錄", previousPage: "上一頁", nextPage: "下一頁", epubReader: "EPUB 閱讀器", epubSection: "第 {current}/{total} 節",
     epubPage: "本節第 {current}/{total} 頁",
+    readingSettings: '閱讀設定',
+    detectingChapters: '正在辨識章節…', noChapters: '未辨識到章節', closeContents: '關閉目錄', chooseChapter: '選擇章節', beginning: '開篇',
     edition: '版本', chooseEdition: '切換《{title}》的版本',
     noLanguageVersion: '暫無可用的語言版本', fallbackLanguage: '目前語言暫無版本，顯示{language}版本。',
     authorWorks: '{author} 的 {count} 部作品', chooseAuthorHint: '請選擇一位作家',
@@ -52,6 +60,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: '約 {minutes} 分鐘', hours: '約 {hours} 小時', hoursMinutes: '約 {hours} 小時 {minutes} 分鐘',
   },
   en: {
+    ...readerSettingMessages.en,
     siteTitle: 'Science Fiction Collection', description: 'Browse science fiction by author and series, read online, and save your reading progress.',
     language: 'Language', theme: 'Toggle theme', sourceCode: 'Website source', contentRepository: 'Book repository',
     licenses: 'Third-party licenses', startReading: 'Start reading', sourceFile: 'Original file', emptyBook: 'Text not available yet', downloadOnly: 'Open the original file to read this format.',
@@ -62,6 +71,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: 'Cover source',
     fontSize: "Text size", smallerText: "Smaller text", largerText: "Larger text", lineSpacing: "Spacing", compactSpacing: "Compact", normalSpacing: "Standard", wideSpacing: "Relaxed", contents: "Contents", previousPage: "Previous", nextPage: "Next", epubReader: "EPUB reader", epubSection: "Section {current}/{total}",
     epubPage: "Section page {current}/{total}",
+    readingSettings: 'Reading settings',
+    detectingChapters: 'Detecting chapters…', noChapters: 'No chapter headings found', closeContents: 'Close contents', chooseChapter: 'Choose a chapter', beginning: 'Beginning',
     edition: 'Edition', chooseEdition: 'Choose an edition of {title}',
     noLanguageVersion: 'No language edition available', fallbackLanguage: 'No edition in the selected language. Showing the {language} edition.',
     authorWorks: '{author} · {count} works', chooseAuthorHint: 'Choose an author to browse their works',
@@ -71,6 +82,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: 'About {minutes} min', hours: 'About {hours} hr', hoursMinutes: 'About {hours} hr {minutes} min',
   },
   fr: {
+    ...readerSettingMessages.fr,
     siteTitle: 'Collection de science-fiction', description: 'Parcourez les œuvres par auteur et par série, lisez en ligne et enregistrez votre progression.',
     language: 'Langue', theme: 'Changer de thème', sourceCode: 'Code source du site', contentRepository: 'Dépôt des livres',
     licenses: 'Licences tierces', startReading: 'Commencer la lecture', sourceFile: 'Fichier original', emptyBook: 'Texte indisponible', downloadOnly: 'Ouvrez le fichier original pour lire ce format.',
@@ -81,6 +93,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: 'Source de la couverture',
     fontSize: "Taille du texte", smallerText: "Réduire le texte", largerText: "Agrandir le texte", lineSpacing: "Interligne", compactSpacing: "Compact", normalSpacing: "Normal", wideSpacing: "Aéré", contents: "Sommaire", previousPage: "Précédent", nextPage: "Suivant", epubReader: "Lecteur EPUB", epubSection: "Section {current}/{total}",
     epubPage: "Page de section {current}/{total}",
+    readingSettings: 'Réglages de lecture',
+    detectingChapters: 'Détection des chapitres…', noChapters: 'Aucun chapitre détecté', closeContents: 'Fermer le sommaire', chooseChapter: 'Choisir un chapitre', beginning: 'Début',
     edition: 'Version', chooseEdition: 'Choisir une version de {title}',
     noLanguageVersion: 'Aucune version linguistique disponible', fallbackLanguage: 'Aucune version dans la langue choisie. Version affichée : {language}.',
     authorWorks: '{author} · {count} œuvres', chooseAuthorHint: 'Choisissez un auteur pour voir ses œuvres',
@@ -90,6 +104,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: 'Environ {minutes} min', hours: 'Environ {hours} h', hoursMinutes: 'Environ {hours} h {minutes} min',
   },
   de: {
+    ...readerSettingMessages.de,
     siteTitle: 'Science-Fiction-Sammlung', description: 'Science-Fiction nach Autor und Reihe entdecken, online lesen und den Lesefortschritt speichern.',
     language: 'Sprache', theme: 'Design wechseln', sourceCode: 'Quellcode der Website', contentRepository: 'Buch-Repository',
     licenses: 'Drittanbieter-Lizenzen', startReading: 'Lesen beginnen', sourceFile: 'Originaldatei', emptyBook: 'Text noch nicht verfügbar', downloadOnly: 'Öffnen Sie die Originaldatei, um dieses Format zu lesen.',
@@ -100,6 +115,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: 'Coverquelle',
     fontSize: "Schriftgröße", smallerText: "Text verkleinern", largerText: "Text vergrößern", lineSpacing: "Zeilenabstand", compactSpacing: "Kompakt", normalSpacing: "Standard", wideSpacing: "Weit", contents: "Inhalt", previousPage: "Zurück", nextPage: "Weiter", epubReader: "EPUB-Leser", epubSection: "Abschnitt {current}/{total}",
     epubPage: "Abschnittsseite {current}/{total}",
+    readingSettings: 'Leseeinstellungen',
+    detectingChapters: 'Kapitel werden erkannt…', noChapters: 'Keine Kapitelüberschriften erkannt', closeContents: 'Inhaltsverzeichnis schließen', chooseChapter: 'Kapitel auswählen', beginning: 'Anfang',
     edition: 'Ausgabe', chooseEdition: 'Ausgabe von {title} wählen',
     noLanguageVersion: 'Keine passende Sprachfassung verfügbar', fallbackLanguage: 'Keine Ausgabe in der gewählten Sprache. Angezeigt: {language}.',
     authorWorks: '{author} · {count} Werke', chooseAuthorHint: 'Wählen Sie einen Autor aus',
@@ -109,6 +126,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: 'Etwa {minutes} Min.', hours: 'Etwa {hours} Std.', hoursMinutes: 'Etwa {hours} Std. {minutes} Min.',
   },
   ru: {
+    ...readerSettingMessages.ru,
     siteTitle: 'Сборник научной фантастики', description: 'Ищите фантастику по авторам и сериям, читайте онлайн и сохраняйте прогресс чтения.',
     language: 'Язык', theme: 'Сменить тему', sourceCode: 'Исходный код сайта', contentRepository: 'Репозиторий книг',
     licenses: 'Сторонние лицензии', startReading: 'Начать чтение', sourceFile: 'Исходный файл', emptyBook: 'Текст пока недоступен', downloadOnly: 'Откройте исходный файл для чтения этого формата.',
@@ -119,6 +137,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: 'Источник обложки',
     fontSize: "Размер текста", smallerText: "Уменьшить текст", largerText: "Увеличить текст", lineSpacing: "Интервал", compactSpacing: "Плотный", normalSpacing: "Обычный", wideSpacing: "Свободный", contents: "Оглавление", previousPage: "Назад", nextPage: "Далее", epubReader: "Чтение EPUB", epubSection: "Раздел {current}/{total}",
     epubPage: "Страница раздела {current}/{total}",
+    readingSettings: 'Настройки чтения',
+    detectingChapters: 'Определяем главы…', noChapters: 'Заголовки глав не найдены', closeContents: 'Закрыть оглавление', chooseChapter: 'Выбрать главу', beginning: 'Начало',
     edition: 'Версия', chooseEdition: 'Выбрать версию: {title}',
     noLanguageVersion: 'Нет доступной языковой версии', fallbackLanguage: 'Нет версии на выбранном языке. Показана версия: {language}.',
     authorWorks: '{author} · Произведений: {count}', chooseAuthorHint: 'Выберите автора для просмотра произведений',
@@ -128,6 +148,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: 'Около {minutes} мин.', hours: 'Около {hours} ч', hoursMinutes: 'Около {hours} ч {minutes} мин.',
   },
   ja: {
+    ...readerSettingMessages.ja,
     siteTitle: 'SF小説作品集', description: '作家やシリーズ別にSF小説を探してオンラインで読み、読書の進捗を保存できます。',
     language: '言語', theme: 'テーマを切り替え', sourceCode: 'サイトのソースコード', contentRepository: '小説リポジトリ',
     licenses: 'サードパーティーライセンス', startReading: '読書を始める', sourceFile: '元のファイル', emptyBook: '本文はまだありません', downloadOnly: 'この形式は元のファイルを開いてお読みください。',
@@ -138,6 +159,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: '表紙の出典',
     fontSize: "文字サイズ", smallerText: "文字を小さく", largerText: "文字を大きく", lineSpacing: "行間", compactSpacing: "狭い", normalSpacing: "標準", wideSpacing: "広い", contents: "目次", previousPage: "前へ", nextPage: "次へ", epubReader: "EPUB リーダー", epubSection: "第 {current}/{total} 節",
     epubPage: "この節の {current}/{total} ページ",
+    readingSettings: '読書設定',
+    detectingChapters: '章を認識しています…', noChapters: '章の見出しが見つかりません', closeContents: '目次を閉じる', chooseChapter: '章を選択', beginning: '冒頭',
     edition: 'バージョン', chooseEdition: '「{title}」のバージョンを選択',
     noLanguageVersion: '利用できる言語版がありません', fallbackLanguage: '選択した言語版がないため、{language}版を表示しています。',
     authorWorks: '{author} · {count}作品', chooseAuthorHint: '作家を選択してください',
@@ -147,6 +170,7 @@ export const messages: Record<Locale, Messages> = {
     minutes: '約{minutes}分', hours: '約{hours}時間', hoursMinutes: '約{hours}時間{minutes}分',
   },
   ko: {
+    ...readerSettingMessages.ko,
     siteTitle: 'SF 소설 모음', description: '작가와 시리즈별로 SF 소설을 찾아 온라인으로 읽고 독서 진행 상황을 저장하세요.',
     language: '언어', theme: '테마 전환', sourceCode: '사이트 소스 코드', contentRepository: '소설 저장소',
     licenses: '타사 라이선스', startReading: '읽기 시작', sourceFile: '원본 파일', emptyBook: '본문이 아직 없습니다', downloadOnly: '이 형식은 원본 파일을 열어 읽어 주세요.',
@@ -157,6 +181,8 @@ export const messages: Record<Locale, Messages> = {
     coverSource: '표지 출처',
     fontSize: "글자 크기", smallerText: "글자 작게", largerText: "글자 크게", lineSpacing: "줄 간격", compactSpacing: "좁게", normalSpacing: "보통", wideSpacing: "넓게", contents: "목차", previousPage: "이전", nextPage: "다음", epubReader: "EPUB 리더", epubSection: "{current}/{total} 절",
     epubPage: "이 절의 {current}/{total} 페이지",
+    readingSettings: '읽기 설정',
+    detectingChapters: '장을 찾는 중…', noChapters: '장 제목을 찾지 못했습니다', closeContents: '목차 닫기', chooseChapter: '장 선택', beginning: '처음',
     edition: '버전', chooseEdition: '{title} 버전 선택',
     noLanguageVersion: '사용 가능한 언어판이 없습니다', fallbackLanguage: '선택한 언어판이 없어 {language}판을 표시합니다.',
     authorWorks: '{author} · 작품 {count}개', chooseAuthorHint: '작가를 선택해 주세요',

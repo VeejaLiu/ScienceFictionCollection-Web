@@ -74,6 +74,9 @@ function append(title, text) {
 append('shadcn/ui — MIT — https://github.com/shadcn-ui/ui/blob/main/LICENSE.md',
   readFileSync(join(root, 'licenses/shadcn-ui-LICENSE.txt'), 'utf8'))
 
+append('tReader chapter detector (worker only) — Copyright (C) 2020-2025 田生 — MPL-2.0 (Incompatible With Secondary Licenses)\nSource: https://github.com/tiansh/reader\nPinned source record: public/vendor/treader-toc/provenance.json\nThe readable, unmodified worker and its license are distributed at /vendor/treader-toc/.',
+  readFileSync(join(root, 'licenses/treader-toc-MPL-2.0.txt'), 'utf8'))
+
 for (const [id, { pkg, location }] of [...packages].sort(([a], [b]) => a.localeCompare(b))) {
   const repository = typeof pkg.repository === 'string' ? pkg.repository : pkg.repository?.url || pkg.homepage || ''
   const files = noticeFiles(location)

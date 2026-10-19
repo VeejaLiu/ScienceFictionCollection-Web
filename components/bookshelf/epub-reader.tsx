@@ -5,8 +5,9 @@ import type { Book as EpubBook, Rendition, Location } from 'epubjs'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useLanguage } from '@/components/language-provider'
 import { Button } from '@/components/ui/button'
-import { flattenContents, validEpubCfi, type ReaderSettings } from '@/lib/reader-settings'
+import { flattenContents, validEpubCfi, readerFonts, type ReaderSettings } from '@/lib/reader-settings'
 import { saveProgress } from '@/lib/reading-progress'
+import { ChapterNavigation } from './chapter-navigation'
 
 export function EpubReader({ url, storageKey, settings }: { url: string; storageKey: string; settings: ReaderSettings }) {
   const { t } = useLanguage()
@@ -48,6 +49,8 @@ export function EpubReader({ url, storageKey, settings }: { url: string; storage
     const handleKey = (event: KeyboardEvent) => {
       const target = event.target as HTMLElement | null
       if (event.altKey || event.ctrlKey || event.metaKey || target?.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target?.tagName || '')) return
+      if (document.querySelector('[role="dialog"][data-state="open"]')) return
+      if (target?.closest('.reader-settings-panel')) return
       if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
         event.preventDefault()
         void navigate(event.key === 'ArrowRight' ? 'next' : 'previous')
@@ -78,15 +81,26 @@ export function EpubReader({ url, storageKey, settings }: { url: string; storage
         let width = container.current.clientWidth, height = container.current.clientHeight
         const reader = book.renderTo(container.current, { width, height, flow: 'paginated', spread: 'none', allowScriptedContent: false })
         rendition.current = reader
-        const style = () => {
-          if (abort.signal.aborted) return
+        const styleDocument = (doc: Document) => {
           const body = getComputedStyle(document.body)
           const value = settingsRef.current
-          reader.themes.default({
-            body: { color: `${body.color} !important`, background: `${body.backgroundColor} !important`, 'font-family': 'system-ui, serif !important' },
-            'body *': { 'font-family': 'inherit !important' },
-            'p, li': { 'line-height': `${value.lineHeight} !important` },
-          })
+          let sheet = doc.querySelector<HTMLStyleElement>('style[data-collection-reader-style]')
+          if (!sheet) { sheet = doc.createElement('style'); sheet.dataset.collectionReaderStyle = ''; doc.head.append(sheet) }
+          // Replace our rules so selecting Original restores the book's own
+          // indentation and repeated adjustments do not accumulate CSS rules.
+          sheet.textContent = `body { color: ${body.color} !important; background: ${body.backgroundColor} !important;
+            font-family: ${readerFonts[value.font]} !important; font-size: ${value.fontSize}px !important; }
+            body * { font-family: inherit !important; }
+            p, li { line-height: ${value.lineHeight} !important; font-weight: ${value.fontWeight} !important;
+              letter-spacing: ${value.letterSpacing}em !important; text-align: ${value.alignment} !important; }
+            p { margin-top: 0 !important; margin-bottom: ${value.paragraphSpacing}em !important;
+              ${value.indent === 'original' ? '' : `text-indent: ${value.indent === 'two' ? '2em' : '0'} !important;`} }`
+        }
+        reader.hooks.content.register((contents: { document: Document }) => styleDocument(contents.document))
+        const style = () => {
+          if (abort.signal.aborted) return
+          const value = settingsRef.current
+          for (const contents of reader.getContents() as unknown as { document: Document }[]) styleDocument(contents.document)
           reader.themes.fontSize(`${value.fontSize}px`)
           reader.themes.override('line-height', String(value.lineHeight), true)
         }
@@ -132,7 +146,7 @@ export function EpubReader({ url, storageKey, settings }: { url: string; storage
         })
         resize.observe(container.current)
         theme = new MutationObserver(style)
-        theme.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+        theme.observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-reader-palette'] })
       } catch { if (!abort.signal.aborted) setFailed(true) }
     }
     void load()
@@ -149,25 +163,24 @@ export function EpubReader({ url, storageKey, settings }: { url: string; storage
     const cfi = reader?.location?.start?.cfi
     applyStyle.current?.()
     if (reader && readyRef.current && validEpubCfi(cfi)) void reader.display(cfi).catch(() => {})
-  }, [settings.fontSize, settings.lineHeight])
+  }, [settings])
 
-  return <section aria-label={t('epubReader')} className="min-w-0 rounded-lg border mt-4 overflow-hidden">
-    <div className="flex flex-wrap items-center justify-between gap-2 border-b bg-muted/30 p-2">
-      <label className="flex min-w-0 flex-1 basis-40 items-center gap-2 text-sm">
-        <span className="shrink-0">{t('contents')}</span>
-        <select aria-label={t('contents')} value={chapter} disabled={!ready || busy || !contents.length} className="min-w-0 w-full min-h-11 rounded-md border bg-background px-2 text-base" onChange={(event) => { if (event.target.value) void navigate({ href: event.target.value }) }}>
-          <option value="">{t('contents')}</option>
-          {contents.map((item, index) => <option key={`${item.href}:${index}`} value={item.href}>{item.label}</option>)}
-        </select>
-      </label>
-      <div className="px-2 text-xs text-muted-foreground tabular-nums" aria-live="polite"><span>{t('epubSection', section)}</span><span className="block mt-1">{t('epubPage', { current: section.page, total: section.pages })}</span></div>
-    </div>
+  return <>
+    <ChapterNavigation loading={!ready && !failed} chapters={contents.map((item, index) => ({
+      id: `epub-chapter-${index}`, title: item.label.trim(), level: item.label.match(/^　*/)?.[0].length || 0,
+    }))} activeId={chapter ? `epub-chapter-${contents.findIndex(item => item.href === chapter)}` : ''} onSelect={id => {
+      const item = contents[Number(id.replace('epub-chapter-', ''))]
+      if (item && !busy) void navigate({ href: item.href })
+    }} />
+    <section aria-label={t('epubReader')} className="min-w-0 rounded-lg border overflow-hidden">
     {!ready && !failed && <p role="status" className="p-4">{t('loading')}</p>}
     {failed && <div className="p-4"><p role="alert" className="mb-3 text-destructive">{t('readError')}</p><Button className="min-h-11" onClick={() => setAttempt((value) => value + 1)}>{t('retry')}</Button></div>}
     <div ref={container} className="w-full h-[65dvh] min-h-80 max-h-[56rem]" aria-busy={!ready} />
     <div className="flex items-center justify-between gap-2 border-t bg-background p-2">
-      <Button variant="outline" className="min-h-11" disabled={!ready || busy || ends.start} onClick={() => void navigate('previous')}><ChevronLeft aria-hidden="true" />{t('previousPage')}</Button>
-      <Button variant="outline" className="min-h-11" disabled={!ready || busy || ends.end} onClick={() => void navigate('next')}>{t('nextPage')}<ChevronRight aria-hidden="true" /></Button>
+      <Button variant="outline" className="min-h-11" aria-label={t('previousPage')} disabled={!ready || busy || ends.start} onClick={() => void navigate('previous')}><ChevronLeft aria-hidden="true" /><span className="hidden sm:inline">{t('previousPage')}</span></Button>
+      <div className="min-w-0 text-center text-xs text-muted-foreground tabular-nums" aria-live="polite"><span>{t('epubSection', section)}</span><span className="block mt-1">{t('epubPage', { current: section.page, total: section.pages })}</span></div>
+      <Button variant="outline" className="min-h-11" aria-label={t('nextPage')} disabled={!ready || busy || ends.end} onClick={() => void navigate('next')}><span className="hidden sm:inline">{t('nextPage')}</span><ChevronRight aria-hidden="true" /></Button>
     </div>
-  </section>
+    </section>
+  </>
 }

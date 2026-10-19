@@ -1,0 +1,16 @@
+{
+  "project": "tReader chapter detector only",
+  "repository": "https://github.com/tiansh/reader",
+  "revision": "282bcdcd6e60321d37306b5e6eadad4df6f89821",
+  "copyright": "Copyright (C) 2020-2025 田生",
+  "license": "MPL-2.0",
+  "secondaryLicenses": "Incompatible With Secondary Licenses",
+  "files": [
+    {
+      "path": "worker.js",
+      "upstreamPath": "src/worker/toc.js",
+      "sha256": "f3c89f82674308f64a6cd9340c304025e28c8a811a472910c00debe3a2798e2f",
+      "modifications": []
+    }
+  ]
+}

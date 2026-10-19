@@ -16,6 +16,8 @@
 
 当前网页使用设备系统字体，不分发字体文件。
 
+TXT 目录识别单独复用 [tReader](https://github.com/tiansh/reader) 的章节识别 Worker，固定于提交 `282bcdcd6e60321d37306b5e6eadad4df6f89821`，未引入其阅读界面或其他模块。`public/vendor/treader-toc/worker.js` 保持原样，以可读源码分发，使用 MPL-2.0 并保留 Incompatible With Secondary Licenses 声明；来源与校验值见该目录的 `provenance.json`，许可证见该目录的 `LICENSE` 及 `licenses/treader-toc-MPL-2.0.txt`。
+
 ## 小说、头像与封面
 
 正文、作者资料和图片来自独立的 [ScienceFictionCollection 仓库](https://github.com/VeejaLiu/ScienceFictionCollection)，其授权范围见 [内容仓库说明](https://github.com/VeejaLiu/ScienceFictionCollection/blob/master/LICENSE-SCOPE.md)。

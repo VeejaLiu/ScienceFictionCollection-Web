@@ -1,0 +1,33 @@
+.reader-chapter-title {
+  display: block;
+  margin-block: 1.8em 0.7em;
+  font-size: 1.25em;
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: start;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.reader-chapter-title[data-chapter-level="1"] {
+  font-size: 1.15em;
+}
+
+.reader-chapter-title[data-chapter-level="2"] {
+  font-size: 1.08em;
+}
+
+@media (max-width: 639px) {
+  .reader-chapter-title {
+    margin-block: 1.5em 0.65em;
+  }
+}
+.reader-paragraph {
+  white-space: pre-wrap;
+  margin-block: 0 var(--reader-paragraph-space, 0.6em);
+  text-indent: 0;
+}
+.reader-original-indent { white-space: pre; }
+.reader-text[data-reader-indent="none"] .reader-original-indent,
+.reader-text[data-reader-indent="two"] .reader-original-indent { display: none; }
+.reader-text[data-reader-indent="two"] .reader-paragraph { text-indent: 2em; }

@@ -8,9 +8,10 @@ interface ReadingProgressBarProps {
   storageKey: string
   layoutKey?: string
   layoutAnchor?: number | null
+  layoutReady?: boolean
 }
 
-export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnchor }: ReadingProgressBarProps) {
+export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnchor, layoutReady = true }: ReadingProgressBarProps) {
   const [progress, setProgress] = useState(0)
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const lastValidProgressRef = useRef(0)
@@ -33,6 +34,7 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
   }, [getScrollMetrics])
 
   useEffect(() => {
+    if (!layoutReady) return
     const ratio = loadProgress(storageKey)
     lastValidProgressRef.current = Math.round(ratio * 1000) / 10
     const scrollToRatio = () => {
@@ -42,13 +44,14 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
       if (maxScroll > 0) {
         window.scrollTo({
           top: targetTop,
-          behavior: 'smooth',
+          behavior: 'instant',
         })
       }
       setProgress(Math.round(targetRatio * 1000) / 10)
     }
+    let secondFrame = 0
     const rafId = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(scrollToRatio)
+      secondFrame = window.requestAnimationFrame(scrollToRatio)
     })
     lastResizeRef.current = {
       w: typeof window !== 'undefined' ? window.innerWidth : 0,
@@ -70,12 +73,13 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
     window.addEventListener('resize', handleResize)
     return () => {
       window.cancelAnimationFrame(rafId)
+      window.cancelAnimationFrame(secondFrame)
       window.removeEventListener('resize', handleResize)
     }
-  }, [getScrollMetrics, storageKey, updateProgress])
+  }, [getScrollMetrics, storageKey, updateProgress, layoutReady])
 
   useLayoutEffect(() => {
-    if (layoutAnchor == null) return
+    if (!layoutReady || layoutAnchor == null) return
     const restore = () => {
       const { maxScroll } = getScrollMetrics()
       lastValidProgressRef.current = layoutAnchor * 100
@@ -86,9 +90,10 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
     // Restore again after the browser finishes reflow and scroll anchoring.
     const frame = window.requestAnimationFrame(restore)
     return () => window.cancelAnimationFrame(frame)
-  }, [layoutKey, layoutAnchor, getScrollMetrics])
+  }, [layoutKey, layoutAnchor, getScrollMetrics, layoutReady])
 
   useEffect(() => {
+    if (!layoutReady) return
     const handleScroll = () => {
       updateProgress()
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
@@ -104,7 +109,7 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
       window.removeEventListener('scroll', handleScroll)
       if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
     }
-  }, [getScrollMetrics, storageKey, updateProgress])
+  }, [getScrollMetrics, storageKey, updateProgress, layoutReady])
 
   const pct = Math.min(100, Math.max(0, progress))
 
@@ -114,14 +119,14 @@ export function ReadingProgressBar({ children, storageKey, layoutKey, layoutAnch
         {children}
       </div>
 
-      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] px-3 border-t border-amber-200/60 dark:border-amber-800/30 bg-amber-100/80 dark:bg-amber-900/50 backdrop-blur-sm">
-        <div className="flex-1 h-0.5 min-w-0 bg-amber-200/50 dark:bg-amber-800/30 rounded-full overflow-hidden">
+      <div className="fixed bottom-0 left-0 right-0 z-40 flex items-center gap-2 pt-1 pb-[max(0.25rem,env(safe-area-inset-bottom))] px-3 border-t border-border/40 bg-background/90 backdrop-blur-sm">
+        <div className="flex-1 h-0.5 min-w-0 bg-muted rounded-full overflow-hidden">
           <div
-            className="h-full bg-amber-500/80 dark:bg-amber-500/70 rounded-full transition-[width] duration-150"
+            className="h-full bg-foreground/50 rounded-full transition-[width] duration-150"
             style={{ width: `${pct}%` }}
           />
         </div>
-        <span className="text-[10px] text-amber-700/80 dark:text-amber-400/80 tabular-nums shrink-0">
+        <span className="text-[10px] text-muted-foreground tabular-nums shrink-0">
           {pct.toFixed(1)}%
         </span>
       </div>

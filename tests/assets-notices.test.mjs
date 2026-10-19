@@ -32,6 +32,8 @@ test('published notices preserve copied component licenses, dependencies and pen
   assert.match(notices, /Upstream application permission: pending/)
   assert.ok(notices.includes(read('licenses/shadcn-ui-LICENSE.txt').toString().trim()))
   assert.match(notices, /Cole Bemis/)
+  assert.ok(notices.includes(read('licenses/treader-toc-MPL-2.0.txt').toString().trim()))
+  assert.match(notices, /tReader chapter detector \(worker only\)/)
   for (const dependency of inventory) {
     assert.ok(dependency.notices.length > 0, dependency.name)
     assert.ok(notices.includes(`${dependency.name}@${dependency.version}`), dependency.name)

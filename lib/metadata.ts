@@ -11,6 +11,8 @@ export type Author = {
   sources?: { label: string; url: string }[]
 }
 
+export type ChapterTitleCorrection = { prefix: string; title: string }
+
 export type Book = {
   id: string
   slug: string
@@ -25,6 +27,7 @@ export type Book = {
   cover: string | null
   coverStyle?: 'full' | 'artwork'
   coverSource?: { label: string; url: string }
+  chapterTitleCorrections?: ChapterTitleCorrection[]
 }
 
 export type Catalog = { schemaVersion: 1; authors: Author[]; books: Book[] }
@@ -96,6 +99,12 @@ export function parseCatalog(authorDocument: unknown, bookDocuments: Record<stri
       requireValue(book.coverSource === undefined || (book.coverSource && typeof book.coverSource.label === 'string'
         && book.coverSource.label.trim() && typeof book.coverSource.url === 'string' && URL.canParse(book.coverSource.url)
         && new URL(book.coverSource.url).protocol === 'https:'), `${book.id}: coverSource`)
+      requireValue(book.chapterTitleCorrections === undefined || (['txt', 'md'].includes(book.format)
+        && Array.isArray(book.chapterTitleCorrections) && book.chapterTitleCorrections.length <= 5000
+        && book.chapterTitleCorrections.every((entry) => entry && typeof entry.prefix === 'string'
+          && typeof entry.title === 'string' && entry.title.trim() === entry.title && entry.title.length > 0
+          && entry.title.length <= 100 && entry.prefix.length <= 200 && entry.prefix.startsWith(entry.title)
+          && !/[\r\n]/u.test(entry.prefix))), `${book.id}: chapterTitleCorrections`)
       bookIds.add(book.id); paths.add(book.path)
       books.push({ ...book, authorId: author.id })
     }
