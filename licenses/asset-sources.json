@@ -90,6 +90,8 @@
     ],
     "rights": "Publisher artwork is recorded with its source; no open license is asserted for third-party covers.",
     "fallback": "Code-generated cover when no verified matching image was found.",
-    "encoding": "WebP, at most 600x900, quality 78; original source hash preserved in inventory"
+    "encoding": "WebP, at most 600x900, quality 78; original source hash preserved in inventory",
+    "layout": "works/<author-slug>/<work-slug>/<version>.webp; journals/<periodical-slug>/<year>/issue-<number>-<version>.webp",
+    "sourceIdentifiers": "Provider identifiers and original/current image hashes are retained in the metadata cover inventory, not in asset filenames."
   }
 }
