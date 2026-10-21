@@ -3,14 +3,14 @@
 import Image from 'next/image'
 import { ChevronDown } from 'lucide-react'
 import { useLanguage } from '@/components/language-provider'
-import { authorBio, authorName, type Author } from '@/lib/metadata'
+import { authorBio, authorName, isPeriodical, type Author } from '@/lib/metadata'
 import { assetHref } from '@/lib/site'
 
 export function AuthorProfile({ author }: { author: Author }) {
   const { locale, t } = useLanguage()
   const bio = authorBio(author, locale)
   if (!bio) return null
-  const title = `${authorName(author, locale)} · ${t('aboutAuthor')}`
+  const title = `${authorName(author, locale)} · ${t(isPeriodical(author) ? 'aboutPeriodical' : 'aboutAuthor')}`
   const sources = !!author.sources?.length && <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
     <span>{t('references')}</span>
     {author.sources?.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noopener noreferrer" className="underline underline-offset-4 hover:text-foreground">{source.label}</a>)}

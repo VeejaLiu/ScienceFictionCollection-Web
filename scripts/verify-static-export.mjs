@@ -11,7 +11,7 @@ const { basePath, siteUrl } = JSON.parse(readFileSync(join(root, 'build-info.jso
 assert.equal(typeof siteUrl, 'string', 'Rebuild the static export before checking it.')
 const absolute = (path) => new URL(path.replace(/^\//, ''), siteUrl.replace(/\/?$/, '/')).href
 const catalog = readCollection()
-const pages = ['/', ...catalog.authors.map((a) => authorHref(a)), ...catalog.books.map((b) => bookHref(b))]
+const pages = ['/', '/periodicals/', ...catalog.authors.map((a) => authorHref(a)), ...catalog.books.map((b) => bookHref(b))]
 const titles = new Set()
 
 for (const page of pages) {
@@ -24,7 +24,9 @@ for (const page of pages) {
   assert.match(html, /<meta name="description" content="[^"]+"/, `${page}: description`)
   if (page.startsWith('/books/')) {
     assert.ok(!html.includes('<article'), `${page}: novel body must not be preloaded`)
-    assert.ok(html.includes('application/ld+json') && html.includes('"@type":"Book"'), `${page}: book schema`)
+    const book = catalog.books.find((book) => bookHref(book) === page)
+    const schemaType = book.contentType === 'periodical' ? 'PublicationIssue' : 'Book'
+    assert.ok(html.includes('application/ld+json') && html.includes(`"@type":"${schemaType}"`), `${page}: publication schema`)
   }
   for (const match of html.matchAll(/<(?:a|img|script|link)\b[^>]*?\b(?:href|src)="(\/[^"]*)"/g)) {
     const url = new URL(match[1].replaceAll('&amp;', '&'), 'https://static.invalid')
@@ -46,7 +48,7 @@ const visit = (directory) => {
 visit(join(root, 'collection'))
 const sitemap = readFileSync(join(root, 'sitemap.xml'), 'utf8')
 const entries = [...sitemap.matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1])
-assert.equal(entries.length, 1 + catalog.authors.length + catalog.books.filter((b) => b.size > 0).length)
+assert.equal(entries.length, 2 + catalog.authors.length + catalog.books.filter((b) => b.size > 0).length)
 for (const book of catalog.books.filter((b) => b.size === 0)) {
   assert.ok(!entries.includes(absolute(bookHref(book))))
   assert.match(readFileSync(join(root, 'books', book.slug, 'index.html'), 'utf8'), /noindex/)

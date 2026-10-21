@@ -2,6 +2,9 @@ import { CONTENT_REPO_OWNER, CONTENT_REPO_NAME } from './site.ts'
 
 export type Author = {
   id: string
+  kind?: 'person' | 'periodical'
+  publisher?: string
+  issuesFile?: string
   slug: string
   directory: string
   name: string
@@ -27,6 +30,8 @@ export type Book = {
   cover: string | null
   coverStyle?: 'full' | 'artwork'
   coverSource?: { label: string; url: string }
+  contentType?: 'periodical'
+  publication?: { issueYear?: number; issueNumber?: number }
   chapterTitleCorrections?: ChapterTitleCorrection[]
 }
 
@@ -63,6 +68,7 @@ export function parseCatalog(authorDocument: unknown, bookDocuments: Record<stri
   const books: Book[] = []
   for (const author of doc.authors) {
     requireValue(author && typeof author === 'object', 'author record')
+    requireValue(author.kind === undefined || ['person', 'periodical'].includes(author.kind), 'catalog entry kind')
     requireValue(typeof author.id === 'string' && /^[a-z0-9][a-z0-9-]*$/.test(author.id) && !ids.has(author.id), 'unique author id')
     requireValue(isSlug(author.slug) && !authorSlugs.has(author.slug), `${author.id}: unique author slug`)
     authorSlugs.add(author.slug)
@@ -94,6 +100,12 @@ export function parseCatalog(authorDocument: unknown, bookDocuments: Record<stri
       requireValue(Number.isSafeInteger(book.size) && book.size >= 0, `${book.id}: size`)
       requireValue(typeof book.language === 'string' && book.language.length > 0, `${book.id}: language`)
       requireValue(typeof book.series === 'string', `${book.id}: series`)
+      if (author.kind === 'periodical') {
+        requireValue(book.contentType === 'periodical', `${book.id}: periodical issue`)
+        requireValue(Number.isSafeInteger(book.publication?.issueYear) && book.publication!.issueYear! >= 1000
+          && book.publication!.issueYear! <= 9999, `${book.id}: issue year`)
+        requireValue(Number.isSafeInteger(book.publication?.issueNumber) && book.publication!.issueNumber! > 0, `${book.id}: issue number`)
+      }
       requireValue(book.cover === null || isAsset(book.cover, 'covers'), `${book.id}: cover`)
       requireValue(book.coverStyle === undefined || ['full', 'artwork'].includes(book.coverStyle), `${book.id}: coverStyle`)
       requireValue(book.coverSource === undefined || (book.coverSource && typeof book.coverSource.label === 'string'
@@ -120,7 +132,10 @@ export function authorBio(author: Author, locale: string) {
   return author.bio?.[locale] || author.bio?.[locale.startsWith('zh') ? 'zh-CN' : 'en'] || author.bio?.['zh-CN'] || ''
 }
 
-export function authorHref(author: Pick<Author, 'slug'>) { return `/authors/${encodeURIComponent(author.slug)}/` }
+export function isPeriodical(author: Pick<Author, 'kind'>) { return author.kind === 'periodical' }
+export function authorHref(author: Pick<Author, 'slug' | 'kind'>) {
+  return `/${isPeriodical(author) ? 'periodicals' : 'authors'}/${encodeURIComponent(author.slug)}/`
+}
 export function bookHref(book: Pick<Book, 'slug'>) { return `/books/${encodeURIComponent(book.slug)}/` }
 
 export function rawBookUrl(author: Author, book: Book) {

@@ -1,4 +1,5 @@
 import { readerSettingMessages } from './reader-settings-messages.ts'
+import { catalogMessages } from './catalog-messages.ts'
 
 export const locales = ['zh-CN', 'zh-TW', 'en', 'fr', 'de', 'ru', 'ja', 'ko'] as const
 export type Locale = typeof locales[number]
@@ -11,6 +12,7 @@ export const localeNames: Record<Locale, string> = {
 
 const zhCN = {
   ...readerSettingMessages['zh-CN'],
+    ...catalogMessages['zh-CN'],
   siteTitle: '科幻小说作品集',
   description: '按作者与系列浏览科幻小说，在线阅读并保存阅读进度。',
   language: '语言', theme: '切换主题', sourceCode: '网站源码', contentRepository: '小说仓库',
@@ -39,6 +41,7 @@ export const messages: Record<Locale, Messages> = {
   'zh-CN': zhCN,
   'zh-TW': {
     ...readerSettingMessages['zh-TW'],
+    ...catalogMessages['zh-TW'],
     siteTitle: '科幻小說作品集', description: '依作者與系列瀏覽科幻小說，線上閱讀並儲存閱讀進度。',
     language: '語言', theme: '切換主題', sourceCode: '網站原始碼', contentRepository: '小說儲存庫',
     licenses: '第三方授權', startReading: '開始閱讀', sourceFile: '原始檔案', emptyBook: '暫未收錄正文', downloadOnly: '此格式請開啟原始檔案閱讀。',
@@ -61,6 +64,7 @@ export const messages: Record<Locale, Messages> = {
   },
   en: {
     ...readerSettingMessages.en,
+    ...catalogMessages['en'],
     siteTitle: 'Science Fiction Collection', description: 'Browse science fiction by author and series, read online, and save your reading progress.',
     language: 'Language', theme: 'Toggle theme', sourceCode: 'Website source', contentRepository: 'Book repository',
     licenses: 'Third-party licenses', startReading: 'Start reading', sourceFile: 'Original file', emptyBook: 'Text not available yet', downloadOnly: 'Open the original file to read this format.',
@@ -83,6 +87,7 @@ export const messages: Record<Locale, Messages> = {
   },
   fr: {
     ...readerSettingMessages.fr,
+    ...catalogMessages['fr'],
     siteTitle: 'Collection de science-fiction', description: 'Parcourez les œuvres par auteur et par série, lisez en ligne et enregistrez votre progression.',
     language: 'Langue', theme: 'Changer de thème', sourceCode: 'Code source du site', contentRepository: 'Dépôt des livres',
     licenses: 'Licences tierces', startReading: 'Commencer la lecture', sourceFile: 'Fichier original', emptyBook: 'Texte indisponible', downloadOnly: 'Ouvrez le fichier original pour lire ce format.',
@@ -105,6 +110,7 @@ export const messages: Record<Locale, Messages> = {
   },
   de: {
     ...readerSettingMessages.de,
+    ...catalogMessages['de'],
     siteTitle: 'Science-Fiction-Sammlung', description: 'Science-Fiction nach Autor und Reihe entdecken, online lesen und den Lesefortschritt speichern.',
     language: 'Sprache', theme: 'Design wechseln', sourceCode: 'Quellcode der Website', contentRepository: 'Buch-Repository',
     licenses: 'Drittanbieter-Lizenzen', startReading: 'Lesen beginnen', sourceFile: 'Originaldatei', emptyBook: 'Text noch nicht verfügbar', downloadOnly: 'Öffnen Sie die Originaldatei, um dieses Format zu lesen.',
@@ -127,6 +133,7 @@ export const messages: Record<Locale, Messages> = {
   },
   ru: {
     ...readerSettingMessages.ru,
+    ...catalogMessages['ru'],
     siteTitle: 'Сборник научной фантастики', description: 'Ищите фантастику по авторам и сериям, читайте онлайн и сохраняйте прогресс чтения.',
     language: 'Язык', theme: 'Сменить тему', sourceCode: 'Исходный код сайта', contentRepository: 'Репозиторий книг',
     licenses: 'Сторонние лицензии', startReading: 'Начать чтение', sourceFile: 'Исходный файл', emptyBook: 'Текст пока недоступен', downloadOnly: 'Откройте исходный файл для чтения этого формата.',
@@ -149,6 +156,7 @@ export const messages: Record<Locale, Messages> = {
   },
   ja: {
     ...readerSettingMessages.ja,
+    ...catalogMessages['ja'],
     siteTitle: 'SF小説作品集', description: '作家やシリーズ別にSF小説を探してオンラインで読み、読書の進捗を保存できます。',
     language: '言語', theme: 'テーマを切り替え', sourceCode: 'サイトのソースコード', contentRepository: '小説リポジトリ',
     licenses: 'サードパーティーライセンス', startReading: '読書を始める', sourceFile: '元のファイル', emptyBook: '本文はまだありません', downloadOnly: 'この形式は元のファイルを開いてお読みください。',
@@ -171,6 +179,7 @@ export const messages: Record<Locale, Messages> = {
   },
   ko: {
     ...readerSettingMessages.ko,
+    ...catalogMessages['ko'],
     siteTitle: 'SF 소설 모음', description: '작가와 시리즈별로 SF 소설을 찾아 온라인으로 읽고 독서 진행 상황을 저장하세요.',
     language: '언어', theme: '테마 전환', sourceCode: '사이트 소스 코드', contentRepository: '소설 저장소',
     licenses: '타사 라이선스', startReading: '읽기 시작', sourceFile: '원본 파일', emptyBook: '본문이 아직 없습니다', downloadOnly: '이 형식은 원본 파일을 열어 읽어 주세요.',

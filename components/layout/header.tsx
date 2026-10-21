@@ -47,6 +47,9 @@ export function Header() {
           <BookOpen className="h-5 w-5 sm:h-6 sm:w-6 shrink-0 text-primary" />
           <span className="font-bold text-base sm:text-xl truncate">{t('siteTitle')}</span>
         </Link>
+        <nav aria-label={t('periodicals')} className="shrink-0">
+          <Link href="/periodicals/" prefetch={false} className="flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground">{t('periodicals')}</Link>
+        </nav>
         <select
           aria-label={t('language')}
           value={locale}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useLanguage } from '@/components/language-provider'
-import { authorName, type Author, type Book } from '@/lib/metadata'
+import { authorName, isPeriodical, type Author, type Book } from '@/lib/metadata'
 import { AuthorSidebar } from './author-sidebar'
 import { BooksGrid } from './books-grid'
 import { AuthorProfile } from './author-profile'
@@ -9,9 +9,9 @@ import { AuthorProfile } from './author-profile'
 export function Bookshelf({ authors, author, books }: {
   authors: Author[]; author: Author; books: Book[]
 }) {
-  const { locale } = useLanguage()
+  const { locale, t } = useLanguage()
   return <main className="w-full min-h-screen max-w-screen-2xl mx-auto p-3 sm:p-4">
-    <h1 className="text-xl font-semibold mb-4">{authorName(author, locale)}</h1>
+    <h1 className="text-xl font-semibold mb-4">{isPeriodical(author) ? `${t('periodicals')} · ` : ''}{authorName(author, locale)}</h1>
     <div className="flex flex-col md:flex-row gap-4">
       <AuthorSidebar authors={authors} selectedAuthor={author.id} />
       <div className="flex-1 min-w-0 space-y-4">

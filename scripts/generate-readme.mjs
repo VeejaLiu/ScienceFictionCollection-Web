@@ -1,16 +1,17 @@
 import { writeFileSync } from 'node:fs'
 import { readCollection } from '../lib/collection.ts'
-import { authorHref } from '../lib/metadata.ts'
+import { authorHref, isPeriodical } from '../lib/metadata.ts'
 import { absoluteUrl } from '../lib/site.ts'
 import { loadProjectEnv } from './load-project-env.mjs'
 
 loadProjectEnv()
 const { authors } = readCollection()
-const items = authors.map((author) => {
+const items = authors.filter((author) => !isPeriodical(author)).map((author) => {
   const english = author.names.en
   const name = author.name + (english && english !== author.name ? ` · ${english}` : '')
   return `- [${name}](${absoluteUrl(authorHref(author))})`
 })
+const periodicals = authors.filter(isPeriodical).map((periodical) => `- [${periodical.name}](${absoluteUrl(authorHref(periodical))})`)
 const markdown = `# 科幻小说作品集
 
 ## 贡献者 Contributors
@@ -20,6 +21,10 @@ const markdown = `# 科幻小说作品集
 ## 作者
 
 ${items.join('\n')}
+
+## 期刊
+
+${periodicals.join('\n')}
 
 ## 更多
 

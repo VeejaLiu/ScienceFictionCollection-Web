@@ -1,6 +1,6 @@
 import { readFileSync, realpathSync, existsSync } from 'node:fs'
 import { resolve, sep } from 'node:path'
-import { parseCatalog, type Catalog } from './metadata.ts'
+import { parseCatalog, isRelativePath, type Catalog } from './metadata.ts'
 
 export function metadataDirectory() {
   return resolve(process.env.COLLECTION_METADATA_DIR || resolve(process.cwd(), '../ScienceFictionCollection/metadata'))
@@ -24,7 +24,21 @@ export function readCollection(directory = metadataDirectory()): Catalog {
     if (!/^[a-z0-9][a-z0-9-]*$/.test(author.id)) throw new Error('Invalid author id')
     documents[author.id] = JSON.parse(readFileSync(resolve(directory, 'books', `${author.id}.json`), 'utf8'))
   }
-  const catalog = parseCatalog(authors, documents)
+  const periodicalsPath = resolve(directory, 'periodicals.json')
+  const periodicals = existsSync(periodicalsPath) ? JSON.parse(readFileSync(periodicalsPath, 'utf8')) : { schemaVersion: 1, periodicals: [] }
+  if (periodicals.schemaVersion !== 1 || !Array.isArray(periodicals.periodicals)) throw new Error('Invalid periodicals registry')
+  for (const periodical of periodicals.periodicals) {
+    if (!isRelativePath(periodical.issuesFile) || !periodical.issuesFile.startsWith('issues/') || !periodical.issuesFile.endsWith('.json')) {
+      throw new Error('Invalid periodical issue manifest')
+    }
+    const issues = JSON.parse(readFileSync(metadataAsset(directory, periodical.issuesFile), 'utf8'))
+    if (issues.schemaVersion !== 1 || issues.periodicalId !== periodical.id || !Array.isArray(issues.issues) || documents[periodical.id]) {
+      throw new Error('Invalid or duplicate periodical manifest')
+    }
+    documents[periodical.id] = { schemaVersion: 1, authorId: periodical.id, books: issues.issues }
+  }
+  // Reader ownership IDs remain stable; author and periodical catalogs live in separate source files.
+  const catalog = parseCatalog({ ...authors, authors: [...authors.authors, ...periodicals.periodicals] }, documents)
   for (const author of catalog.authors) metadataAsset(directory, author.avatar)
   for (const book of catalog.books) if (book.cover) metadataAsset(directory, book.cover)
   return catalog

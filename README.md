@@ -19,6 +19,14 @@
 - [安迪·威尔 · Andy Weir](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/andy-weir/)
 - [亚瑟·克拉克 · Arthur C. Clarke](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/arthur-c-clarke/)
 - [亚瑟·柯南·道尔 · Arthur Conan Doyle](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/arthur-conan-doyle/)
+- [赫伯特·乔治·威尔斯 · H. G. Wells](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/h-g-wells/)
+- [奥拉夫·斯塔普尔顿 · Olaf Stapledon](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/olaf-stapledon/)
+- [菲利普·K.迪克 · Philip K. Dick](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/philip-k-dick/)
+- [雷·内勒 · Ray Nayler](https://veejaliu.github.io/ScienceFictionCollection-Web/authors/ray-nayler/)
+
+## 期刊
+
+- [科幻世界](https://veejaliu.github.io/ScienceFictionCollection-Web/periodicals/science-fiction-world/)
 
 ## 更多
 

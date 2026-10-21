@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { BookOpen, Library, List } from 'lucide-react'
 import { BookCover } from './book-cover'
-import { authorName, bookHref, type Author, type Book } from '@/lib/metadata'
+import { authorName, bookHref, isPeriodical, type Author, type Book } from '@/lib/metadata'
 import { useLanguage } from '@/components/language-provider'
 import { preferredVersion } from '@/lib/book-versions'
 import { useEditionPreferences } from './use-edition-preferences'
@@ -17,6 +17,7 @@ type View = 'shelf' | 'list'
 export function BooksGrid({ books, author }: { books: Book[]; author: Author }) {
   const { locale, t } = useLanguage()
   const preferences = useEditionPreferences()
+  const periodical = isPeriodical(author)
   const versionsByWork = new Map<string, Book[]>()
   for (const book of books) {
     const versions = versionsByWork.get(book.workId) || []
@@ -38,13 +39,15 @@ export function BooksGrid({ books, author }: { books: Book[]; author: Author }) 
   }
   const groups = new Map<string, Book[]>()
   for (const book of visibleBooks) {
-    const group = groups.get(book.series) || []
-    group.push(book); groups.set(book.series, group)
+    const section = periodical ? String(book.publication!.issueYear) : book.series
+    const group = groups.get(section) || []
+    group.push(book); groups.set(section, group)
   }
-  const sections = [...groups].sort(([a], [b]) => a.localeCompare(b))
+  const sections = [...groups].sort(([a], [b]) => periodical ? Number(b) - Number(a) : a.localeCompare(b))
+  if (periodical) for (const [, issues] of sections) issues.sort((a, b) => a.publication!.issueNumber! - b.publication!.issueNumber!)
   return <div className="books-panel flex-1 min-w-0 border rounded-xl">
     <div className="p-3 sm:p-4 border-b bg-muted/30 flex flex-wrap items-center justify-between gap-3">
-      <h2 className="font-semibold text-sm">{t('authorWorks', { author: authorName(author, locale), count: visibleBooks.length })}</h2>
+      <h2 className="font-semibold text-sm">{t(periodical ? 'periodicalIssues' : 'authorWorks', { author: authorName(author, locale), count: visibleBooks.length })}</h2>
       <div role="group" aria-label={t('viewMode')} className="flex gap-1">
         <Button size="sm" className="min-h-11" variant={view === 'shelf' ? 'default' : 'ghost'} aria-pressed={view === 'shelf'} onClick={() => changeView('shelf')}>
           <Library aria-hidden="true" />{t('shelfView')}
