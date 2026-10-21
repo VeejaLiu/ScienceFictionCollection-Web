@@ -4,6 +4,7 @@ export type Author = {
   id: string
   kind?: 'person' | 'periodical'
   publisher?: string
+  booksFile?: string
   issuesFile?: string
   slug: string
   directory: string

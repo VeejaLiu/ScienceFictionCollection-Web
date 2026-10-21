@@ -22,7 +22,10 @@ export function readCollection(directory = metadataDirectory()): Catalog {
   if (!Array.isArray(authors.authors)) throw new Error('Invalid metadata authors list')
   for (const author of authors.authors) {
     if (!/^[a-z0-9][a-z0-9-]*$/.test(author.id)) throw new Error('Invalid author id')
-    documents[author.id] = JSON.parse(readFileSync(resolve(directory, 'books', `${author.id}.json`), 'utf8'))
+    if (!isRelativePath(author.booksFile) || !author.booksFile.startsWith('books/') || !author.booksFile.endsWith('.json')) {
+      throw new Error('Invalid author book manifest')
+    }
+    documents[author.id] = JSON.parse(readFileSync(metadataAsset(directory, author.booksFile), 'utf8'))
   }
   const periodicalsPath = resolve(directory, 'periodicals.json')
   const periodicals = existsSync(periodicalsPath) ? JSON.parse(readFileSync(periodicalsPath, 'utf8')) : { schemaVersion: 1, periodicals: [] }

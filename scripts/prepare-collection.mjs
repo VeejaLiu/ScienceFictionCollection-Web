@@ -9,7 +9,7 @@ const catalog = readCollection()
 const directory = metadataDirectory()
 const target = resolve('public/collection')
 const files = new Set(['authors.json', ...(existsSync(resolve(directory, 'periodicals.json')) ? ['periodicals.json'] : []),
-  ...catalog.authors.map((a) => a.kind === 'periodical' ? a.issuesFile : `books/${a.id}.json`),
+  ...catalog.authors.map((a) => a.kind === 'periodical' ? a.issuesFile : a.booksFile),
   ...catalog.authors.map((a) => a.avatar), ...catalog.books.flatMap((b) => b.cover ? [b.cover] : [])])
 rmSync(target, { recursive: true, force: true })
 for (const file of files) {

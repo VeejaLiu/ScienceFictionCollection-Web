@@ -7,7 +7,7 @@ import { parseCatalog, authorName, rawBookUrl, isRelativePath, authorHref, bookH
 import { readCollection } from '../lib/collection.ts'
 import { safeJsonLd, bookSchema } from '../lib/seo.ts'
 
-const author = { id: '001', slug: 'test-writer', bio: { 'zh-CN': '作家简介', en: 'Writer biography' }, directory: '小说目录（未下载） ', name: '作家', names: { 'zh-CN': '作家', en: 'Writer', fr: 'Auteur' }, avatar: 'avatars/001.webp' }
+const author = { id: '001', slug: 'test-writer', booksFile: 'books/test-writer.json', bio: { 'zh-CN': '作家简介', en: 'Writer biography' }, directory: '小说目录（未下载） ', name: '作家', names: { 'zh-CN': '作家', en: 'Writer', fr: 'Auteur' }, avatar: 'avatars/001.webp' }
 const book = { id: '001-book', workId: '001-book', slug: '书名-1', path: '系列/书名 #1.txt', title: '书名', format: 'txt', size: 20000, language: 'zh-CN', series: '系列', cover: null }
 const documents = () => [{ schemaVersion: 1, authors: [structuredClone(author)] }, { '001': { schemaVersion: 1, authorId: '001', books: [structuredClone(book)] } }]
 
@@ -17,7 +17,7 @@ test('catalog metadata binds author directories and nested works without inspect
     const [authors, books] = documents()
     mkdirSync(join(directory, 'books')); mkdirSync(join(directory, 'avatars'))
     writeFileSync(join(directory, 'authors.json'), JSON.stringify(authors))
-    writeFileSync(join(directory, 'books/001.json'), JSON.stringify(books['001']))
+    writeFileSync(join(directory, author.booksFile), JSON.stringify(books['001']))
     writeFileSync(join(directory, 'avatars/001.webp'), Buffer.from('image fixture'))
     // No author directory or novel exists in this fixture: only JSON and an image.
     const catalog = readCollection(directory)
