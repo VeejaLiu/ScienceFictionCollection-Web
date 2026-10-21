@@ -37,17 +37,17 @@ export function AuthorSidebar({ authors, selectedAuthor }: { authors: Author[]; 
     <details open={expanded} onToggle={(event) => setExpanded(event.currentTarget.open)} className="group rounded-xl border md:hidden">
       <summary className="flex min-h-12 cursor-pointer list-none items-center gap-2 px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-ring [&::-webkit-details-marker]:hidden">
         <User className="size-4 shrink-0" aria-hidden="true" />
-        <span className="shrink-0 text-muted-foreground">{current && isPeriodical(current) ? t('periodicals') : t('chooseAuthor')}</span>
+        <span className="shrink-0 text-muted-foreground">{t('browseCatalog')}</span>
         <span className="min-w-0 flex-1 truncate font-medium">{current ? authorName(current, locale) : ''}</span>
         <ChevronDown className="size-4 shrink-0 transition-transform group-open:rotate-180" aria-hidden="true" />
       </summary>
-      <nav aria-label={t('chooseAuthor')} className="max-h-[min(60dvh,24rem)] overflow-y-auto overscroll-contain border-t p-2">{links}</nav>
+      <nav aria-label={t('browseCatalog')} className="max-h-[min(60dvh,24rem)] overflow-y-auto overscroll-contain border-t p-2">{links}</nav>
     </details>
     <div className="hidden max-h-[calc(100dvh-9rem)] overflow-y-auto overscroll-contain rounded-xl border md:block">
       <h2 className="p-3 border-b bg-muted/50 font-semibold text-sm flex items-center gap-2">
-        <User className="h-4 w-4" aria-hidden="true" />{t('chooseAuthor')}
+        <User className="h-4 w-4" aria-hidden="true" />{t('browseCatalog')}
       </h2>
-      <nav className="p-2" aria-label={t('chooseAuthor')}>{links}</nav>
+      <nav className="p-2" aria-label={t('browseCatalog')}>{links}</nav>
     </div>
   </aside>
 }
